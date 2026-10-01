@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}FitBuddy — AI Fitness Planning Platform{% endblock %}</title>
+  <meta name="description" content="Personalized 7-day AI workout routines and goal-specific nutrition guidance powered by Gemini AI.">
+  
+  <!-- Modern Font Stack -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  
+  <!-- FitBuddy CSS Architecture -->
+  <link rel="stylesheet" href="/static/css/design-system.css">
+  <link rel="stylesheet" href="/static/css/main.css">
+  <link rel="stylesheet" href="/static/css/onboarding.css">
+  <link rel="stylesheet" href="/static/css/dashboard.css">
+  <link rel="stylesheet" href="/static/css/workout.css">
+  <link rel="stylesheet" href="/static/css/chat.css">
+  <link rel="stylesheet" href="/static/css/responsive.css">
+  
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+  <div class="app-shell">
+    
+    <!-- Global Full-Width Navigation -->
+    <header class="navbar">
+      <div class="nav-container">
+        <a href="/" class="nav-brand">
+          <div class="brand-icon">⚡</div>
+          <span>FitBuddy</span>
+        </a>
+
+        <!-- Desktop & Mobile Navigation Links -->
+        <ul class="nav-menu" id="primaryNavMenu">
+          <li><a href="/dashboard{% if user %}?user_id={{ user.id }}{% endif %}" class="nav-link {% if page == 'dashboard' %}active{% endif %}">Dashboard</a></li>
+          <li><a href="/workout{% if user %}?user_id={{ user.id }}{% endif %}" class="nav-link {% if page == 'workout' or page == 'daily_workout' %}active{% endif %}">My Plan</a></li>
+          <li><a href="/nutrition{% if user %}?user_id={{ user.id }}{% endif %}" class="nav-link {% if page == 'nutrition' %}active{% endif %}">Nutrition</a></li>
+          <li><a href="/profile{% if user %}?user_id={{ user.id }}{% endif %}" class="nav-link {% if page == 'profile' %}active{% endif %}">Profile</a></li>
+        </ul>
+
+        <!-- Action Items & User Switcher -->
+        <div class="nav-actions">
+          {% if user %}
+            <div class="user-dropdown">
+              <button class="user-badge-btn" id="userDropdownBtn" title="Switch or manage active profile">
+                <span class="user-avatar">{{ user.name[0] }}</span>
+                <span>{{ user.name.split(' ')[0] }}</span>
+                <span style="font-size: 0.7rem; color: var(--text-muted);">▼</span>
+              </button>
+              <div class="dropdown-menu" id="userDropdownMenu">
+                <div style="padding: 0.5rem 0.8rem; border-bottom: 1px solid var(--border-color); font-size: 0.75rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">
+                  Switch Profile
+                </div>
+                {% if all_users %}
+                  {% for u in all_users %}
+                    {% set is_curr = (user and u.id == user.id) %}
+                    <a href="/dashboard?user_id={{ u.id }}" class="dropdown-item">
+                      <span class="{% if is_curr %}user-active-highlight{% else %}user-inactive-highlight{% endif %}">
+                        {{ u.name }}
+                      </span>
+                      <span class="badge badge-muted" style="font-size: 0.65rem;">{{ u.goal }}</span>
+                    </a>
+                  {% endfor %}
+                {% endif %}
+                <div style="border-top: 1px solid var(--border-color); margin-top: 0.25rem; padding-top: 0.25rem;">
+                  <a href="/profile?user_id={{ user.id }}" class="dropdown-item">⚙️ Profile Settings</a>
+                  <a href="/onboard" class="dropdown-item">➕ New User Setup</a>
+                </div>
+              </div>
+            </div>
+            <a href="/refine?user_id={{ user.id }}" class="btn btn-primary btn-sm">Refine Plan</a>
+          {% else %}
+            <a href="/onboard" class="btn btn-primary btn-sm">Get Started</a>
+          {% endif %}
+
+          <!-- Mobile Menu Hamburger Button -->
+          <button type="button" class="mobile-menu-toggle" id="mobileNavToggle" aria-label="Toggle Navigation">
+            ☰
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content Viewport Area -->
+    <main class="main-content">
+      {% block content %}{% endblock %}
+    </main>
+
+    <!-- Global Toast Notifications Container -->
+    <div id="toast-container"></div>
+
+    <!-- ALWAYS-ON REALTIME AI COACH CHATBOT (FIXED BOTTOM-RIGHT) -->
+    <div id="fitbuddy-chat-root" {% if user %}data-user-id="{{ user.id }}" data-user-name="{{ user.name }}"{% endif %}>
+      <!-- Floating Trigger Launcher Button -->
+      <button type="button" class="chat-floating-btn" id="chatFloatingTrigger" aria-label="Open AI Fitness Coach">
+        <div class="chat-floating-icon">⚡</div>
+        <span>AI Coach</span>
+        <div class="chat-pulse-dot" title="Online & Ready"></div>
+      </button>
+
+      <!-- Spacious Chat Popup Window -->
+      <aside class="chat-popup-window" id="chatPopupWindow" role="dialog" aria-label="FitBuddy AI Coach Chat">
+        <!-- Premium Dark Glass Header -->
+        <div class="chat-popup-header">
+          <div class="chat-header-info">
+            <div class="chat-header-avatar">
+              ⚡
+              <div class="chat-header-status-dot"></div>
+            </div>
+            <div class="chat-header-text-group">
+              <div class="chat-header-title-row">
+                <span class="chat-header-title">FitBuddy AI Coach</span>
+                <span class="chat-header-badge">Gemini Pro</span>
+              </div>
+              <div class="chat-header-subtitle" id="chatCoachSubtitle">
+                {% if user %}
+                  Online · {{ user.name.split(' ')[0] }} ({{ user.goal }})
+                {% else %}
+                  Online · Precision Sports Science AI
+                {% endif %}
+              </div>
+            </div>
+          </div>
+          <div class="chat-header-actions">
+            <button type="button" class="chat-header-btn" id="chatExpandBtn" title="Toggle Size" aria-label="Expand Chat">⛶</button>
+            <button type="button" class="chat-header-btn" id="chatClearBtn" title="Clear Conversation" aria-label="Clear Chat">🗑️</button>
+            <button type="button" class="chat-header-btn" id="chatCloseBtn" title="Close Chat" aria-label="Close Chat">✕</button>
+          </div>
+        </div>
+
+        <!-- Roomy Messages Stream -->
+        <div class="chat-messages-container" id="chatMessagesContainer">
+          <div class="chat-message-row assistant-row">
+            <div class="chat-bubble-avatar">⚡</div>
+            <div>
+              <div class="chat-bubble">
+                {% if user %}
+                  <p>Hey <strong>{{ user.name.split(' ')[0] }}</strong>! 👋 I'm your real-time AI Fitness Coach.</p>
+                  <p>I have your <strong>{{ user.goal }}</strong> profile and active routine loaded. Ask me about exercise substitutions, post-workout nutrition, recovery, or form cues!</p>
+                {% else %}
+                  <p>Hello! 👋 I'm the FitBuddy AI Coach. How can I help with your training, workout splits, or nutrition goals today?</p>
+                {% endif %}
+              </div>
+              <div class="chat-message-time">Just now</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Interactive Quick Prompt Chips -->
+        <div class="chat-suggestions-wrapper">
+          <button type="button" class="chat-suggestion-chip" data-prompt="Can you suggest an exercise substitution for today's routine?">🔄 Swap an exercise</button>
+          <button type="button" class="chat-suggestion-chip" data-prompt="What should my post-workout meal and protein look like?">🥗 Post-workout meal</button>
+          <button type="button" class="chat-suggestion-chip" data-prompt="How do I follow the tempo (e.g., 3-0-1) in my exercises?">⏱️ Explain tempo</button>
+          <button type="button" class="chat-suggestion-chip" data-prompt="My knees hurt during squats, what adjustments can I make?">🩹 Joint / Knee comfort</button>
+          <button type="button" class="chat-suggestion-chip" data-prompt="How much hydration and sleep do I need for recovery?">💧 Hydration & Sleep</button>
+        </div>
+
+        <!-- Spacious Input Footer -->
+        <div class="chat-popup-footer">
+          <div class="chat-input-row">
+            <input type="text" id="chatInputField" class="chat-input-field" placeholder="Ask your AI coach anything..." autocomplete="off">
+            <button type="button" class="chat-send-btn" id="chatSendBtn" aria-label="Send Message" title="Send (Enter)">
+              ↑
+            </button>
+          </div>
+          <div class="chat-footer-hint">
+            <span>⚡ Calibrated to your fitness plan</span>
+            <span>Press ↵ to send</span>
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <!-- Compact Minimal Footer -->
+    <footer class="footer">
+      <div class="footer-content">
+        <div class="footer-brand">
+          <span>⚡ FitBuddy</span>
+          <span style="font-weight: normal; color: var(--text-subtle);">· AI Fitness & Wellness Platform</span>
+        </div>
+
+        <div class="footer-links">
+          <a href="/history{% if user %}?user_id={{ user.id }}{% endif %}">Plan History</a>
+          <a href="javascript:void(0)">Privacy</a>
+          <a href="javascript:void(0)">Terms</a>
+          <span>© FitBuddy</span>
+        </div>
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- Scripts -->
+  <script src="/static/js/app.js"></script>
+  <script src="/static/js/chat.js"></script>
+  {% block extra_scripts %}{% endblock %}
+</body>
+</html>

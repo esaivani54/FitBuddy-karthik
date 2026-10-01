@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+
+{% block title %}Version History — FitBuddy{% endblock %}
+
+{% block content %}
+<div class="container container-narrow">
+  
+  <div class="page-header">
+    <div class="page-title-row">
+      <div>
+        <span class="badge badge-secondary" style="margin-bottom: 0.4rem;">Plan Evolution</span>
+        <h1>Workout Plan History</h1>
+        <p class="page-subtitle">Track every version of your periodized routines and feedback iterations.</p>
+      </div>
+
+      <a href="/refine?user_id={{ user.id }}" class="btn btn-primary btn-sm">
+        + Refine Active Plan
+      </a>
+    </div>
+  </div>
+
+  {% if history and history|length > 0 %}
+    <div class="timeline">
+      {% for p in history %}
+        <div class="timeline-item {% if p.is_active %}active{% endif %}">
+          <div class="timeline-node"></div>
+          
+          <div class="card {% if p.is_active %}active-plan-card{% endif %}">
+            <div class="card-header">
+              <div style="display: flex; align-items: center; gap: 0.65rem;">
+                <span class="badge {% if p.is_active %}badge-primary{% else %}badge-muted{% endif %}" style="font-size: 0.8rem;">
+                  Version {{ p.version }}
+                </span>
+                {% if p.is_active %}
+                  <span class="badge badge-accent">⚡ Currently Active</span>
+                {% endif %}
+                <h3 style="font-size: 1.15rem; margin: 0;">{{ p.plan_title }}</h3>
+              </div>
+
+              <span style="font-size: 0.8rem; color: var(--text-subtle);">
+                {{ p.created_at.strftime('%b %d, %Y at %H:%M') }}
+              </span>
+            </div>
+
+            <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0.85rem;">
+              {{ p.summary }}
+            </p>
+
+            {% if p.feedback %}
+              <div style="background-color: var(--bg-subtle); border-left: 3px solid var(--secondary); padding: 0.65rem 0.85rem; border-radius: 0 var(--radius-sm) var(--radius-sm) 0; font-size: 0.85rem; margin-bottom: 1rem;">
+                <strong>Feedback Applied:</strong> "{{ p.feedback }}"
+              </div>
+            {% endif %}
+
+            <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem; padding-top: 0.75rem; border-top: 1px solid var(--border-light);">
+              <div style="display: flex; gap: 0.5rem; font-size: 0.8rem; color: var(--text-subtle);">
+                <span>Goal: <strong>{{ p.target_goal }}</strong></span>
+                <span>•</span>
+                <span>Intensity: <strong>{{ p.intensity }}</strong></span>
+              </div>
+
+              <div style="display: flex; gap: 0.5rem;">
+                <a href="/workout?user_id={{ user.id }}&plan_id={{ p.id }}" class="btn btn-secondary btn-sm">
+                  View Full Schedule →
+                </a>
+
+                {% if not p.is_active %}
+                  <button type="button" class="btn btn-primary btn-sm activate-plan-btn" data-plan-id="{{ p.id }}">
+                    Set as Active
+                  </button>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="card" style="text-align: center; padding: 3rem 1.5rem;">
+      <div style="font-size: 2.5rem; margin-bottom: 1rem;">📋</div>
+      <h3>No Workout Versions Yet</h3>
+      <p style="margin-bottom: 1.5rem;">Generate your initial plan to start tracking version history.</p>
+      <a href="/onboard" class="btn btn-primary">Build My Plan</a>
+    </div>
+  {% endif %}
+
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const activateButtons = document.querySelectorAll('.activate-plan-btn');
+  activateButtons.forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const planId = btn.getAttribute('data-plan-id');
+      try {
+        await FitBuddy.api('/api/workouts/activate/' + planId + '?user_id={{ user.id }}', { method: 'POST' });
+        FitBuddy.toast('Active routine updated successfully!', 'success');
+        setTimeout(() => window.location.href = '/workout?user_id={{ user.id }}&plan_id=' + planId, 600);
+      } catch (err) {
+        console.error(err);
+      }
+    });
+  });
+});
+</script>
+{% endblock %}

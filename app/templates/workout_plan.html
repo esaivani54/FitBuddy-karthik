@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+
+{% block title %}My 7-Day Plan — FitBuddy{% endblock %}
+
+{% block content %}
+<div class="container" style="padding-top: 1.5rem; padding-bottom: 3.5rem; max-width: 1160px;">
+  
+  <!-- Header & Inline Plan Summary -->
+  <div style="margin-bottom: 1.75rem;">
+    <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem; margin-bottom: 0.75rem;">
+      <div>
+        <h1 style="font-size: 1.75rem; font-weight: 800; color: var(--text-main); margin-bottom: 0.25rem; letter-spacing: -0.02em;">
+          My 7-Day Plan
+        </h1>
+        <p style="font-size: 0.95rem; color: var(--text-muted); margin: 0;">
+          Your personalized workouts for this week.
+        </p>
+      </div>
+
+      <div style="display: flex; gap: 0.5rem; align-items: center;">
+        <a href="/refine?user_id={{ user.id }}&plan_id={{ plan.id }}" class="btn btn-secondary btn-sm">
+          Adjust Routine
+        </a>
+      </div>
+    </div>
+
+    <!-- Compact Inline Summary -->
+    {% set training_days = days | rejectattr('is_rest_day') | list %}
+    {% set rest_days = days | selectattr('is_rest_day') | list %}
+    <div style="background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 0.65rem 1rem; font-size: 0.85rem; color: var(--text-muted); display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap;">
+      <span>Goal: <strong style="color: var(--text-main);">{{ plan.target_goal }}</strong></span>
+      <span>•</span>
+      <span><strong style="color: var(--text-main);">{{ plan.intensity }}</strong> intensity</span>
+      <span>•</span>
+      <span><strong style="color: var(--text-main);">{{ training_days|length }}</strong> workouts</span>
+      <span>•</span>
+      <span><strong style="color: var(--text-main);">{{ rest_days|length }}</strong> recovery days</span>
+      <span>•</span>
+      <span>Version {{ plan.version }}</span>
+    </div>
+  </div>
+
+  <!-- 7-Day Weekly Grid Overview -->
+  <div class="grid" style="grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1rem;">
+    {% for d in days %}
+      {% set is_done = (d.day_number in completed_days) %}
+      {% set is_today = (d.day_number == active_day) %}
+      
+      <div class="card" style="padding: 1.35rem; border-radius: 14px; display: flex; flex-direction: column; justify-content: space-between; border: 1px solid {% if is_today %}var(--primary){% else %}var(--border-color){% endif %}; background: {% if is_today %}var(--primary-surface){% else %}#ffffff{% endif %};">
+        <div>
+          <!-- Day Header & Status -->
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+            <span style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: {% if is_today %}var(--primary){% else %}var(--text-muted){% endif %};">
+              {{ d.day_name }} · Day {{ d.day_number }}
+            </span>
+            {% if is_done %}
+              <span style="font-size: 0.75rem; font-weight: 700; color: var(--success); background: var(--success-light); padding: 0.15rem 0.5rem; border-radius: var(--radius-full);">
+                ✓ Completed
+              </span>
+            {% elif is_today %}
+              <span style="font-size: 0.75rem; font-weight: 700; color: var(--primary); background: var(--primary-light); padding: 0.15rem 0.5rem; border-radius: var(--radius-full);">
+                ● Today
+              </span>
+            {% elif d.is_rest_day %}
+              <span style="font-size: 0.75rem; font-weight: 600; color: var(--text-muted); background: var(--bg-subtle); padding: 0.15rem 0.5rem; border-radius: var(--radius-full);">
+                Rest
+              </span>
+            {% endif %}
+          </div>
+
+          <!-- Workout Title & Duration -->
+          <h3 style="font-size: 1.15rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.35rem;">
+            {{ d.workout_title }}
+          </h3>
+
+          <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem;">
+            {% if d.is_rest_day %}
+              Active Recovery · Mobility & Rest
+            {% else %}
+              ⏱️ {{ d.duration_minutes }} min · Focus: <strong>{{ d.focus }}</strong>
+            {% endif %}
+          </div>
+        </div>
+
+        <!-- Action Button -->
+        <div style="margin-top: 1rem; padding-top: 0.75rem; border-top: 1px solid var(--border-light); display: flex; justify-content: space-between; align-items: center;">
+          <span style="font-size: 0.8rem; color: var(--text-subtle);">
+            {% if d.exercises and not d.is_rest_day %}{{ d.exercises|length }} exercises{% else %}Rest & recharge{% endif %}
+          </span>
+          <a href="/workout/day/{{ d.day_number }}?user_id={{ user.id }}&plan_id={{ plan.id }}" class="btn {% if is_today %}btn-primary{% else %}btn-secondary{% endif %} btn-sm">
+            {% if is_today %}Start Workout →{% else %}View Workout{% endif %}
+          </a>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+
+</div>
+{% endblock %}

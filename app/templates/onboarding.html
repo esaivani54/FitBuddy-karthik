@@ -1,0 +1,210 @@
+{% extends "base.html" %}
+
+{% block title %}Get Started — FitBuddy{% endblock %}
+
+{% block content %}
+<div class="container container-narrow" style="padding: 2rem 1rem 3.5rem; max-width: 680px; margin: 0 auto;">
+  
+  <div class="card" style="padding: 2.25rem 2rem; border-radius: 20px; box-shadow: var(--shadow-md); background: #ffffff;">
+    
+    <!-- Step 1: Basic Profile -->
+    <div class="wizard-step-pane active" id="wizard-step-1">
+      <div style="margin-bottom: 1.75rem;">
+        <span class="badge badge-primary" style="margin-bottom: 0.5rem;" id="step-badge-1">Step 1 of 4</span>
+        <h1 style="font-size: 1.75rem; margin-bottom: 0.35rem;">Tell us about yourself</h1>
+        <p style="font-size: 0.95rem; color: var(--text-muted);">We'll use this information to create a workout that fits you.</p>
+      </div>
+
+      <div class="grid grid-2">
+        <div class="form-group">
+          <label class="form-label" for="input-name">Full Name <span style="color: var(--danger);">*</span></label>
+          <input type="text" id="input-name" class="form-input" placeholder="e.g. Alex" required autocomplete="name">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="input-age">Age (years) <span style="color: var(--danger);">*</span></label>
+          <input type="number" id="input-age" class="form-input" placeholder="e.g. 28" min="12" max="100" required>
+        </div>
+      </div>
+
+      <div class="grid grid-2">
+        <div class="form-group">
+          <label class="form-label" for="input-weight">Weight (kg) <span style="color: var(--danger);">*</span></label>
+          <input type="number" id="input-weight" class="form-input" placeholder="e.g. 70" step="0.5" min="30" max="300" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="input-height">Height (cm) <span class="form-label-hint">(optional)</span></label>
+          <input type="number" id="input-height" class="form-input" placeholder="e.g. 175" value="175" min="80" max="250">
+        </div>
+      </div>
+
+      <div class="grid grid-2">
+        <div class="form-group">
+          <label class="form-label" for="input-gender">Gender</label>
+          <select id="input-gender" class="form-select">
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Prefer not to say">Prefer not to say</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="input-equipment">Available Equipment</label>
+          <select id="input-equipment" class="form-select">
+            <option value="Full Gym">Full Gym (Machines & Weights)</option>
+            <option value="Dumbbells Only">Home (Dumbbells / Bands)</option>
+            <option value="Bodyweight / Home">Bodyweight / No Equipment</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 2: Goal -->
+    <div class="wizard-step-pane" id="wizard-step-2" style="display: none;">
+      <div style="margin-bottom: 1.75rem;">
+        <span class="badge badge-primary" style="margin-bottom: 0.5rem;" id="step-badge-2">Step 2 of 4</span>
+        <h1 style="font-size: 1.75rem; margin-bottom: 0.35rem;">What's your primary goal?</h1>
+        <p style="font-size: 0.95rem; color: var(--text-muted);">Choose what you would like to focus on first.</p>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 0.85rem;">
+        <div class="goal-card selected" data-goal="Weight Loss" style="border: 2px solid var(--primary); background: var(--primary-surface); padding: 1.15rem 1.25rem; border-radius: var(--radius-lg); cursor: pointer; display: flex; align-items: center; justify-content: space-between; transition: all 0.2s;">
+          <div style="display: flex; align-items: center; gap: 0.85rem;">
+            <span style="font-size: 1.75rem;">🔥</span>
+            <div>
+              <div style="font-weight: 700; font-size: 1.05rem; color: var(--text-main);">Lose Weight</div>
+              <div style="font-size: 0.85rem; color: var(--text-muted);">Burn fat, boost metabolism, and build daily energy</div>
+            </div>
+          </div>
+          <span style="color: var(--primary); font-size: 1.2rem; font-weight: bold;">✓</span>
+        </div>
+
+        <div class="goal-card" data-goal="Muscle Gain" style="border: 2px solid var(--border-color); background: #ffffff; padding: 1.15rem 1.25rem; border-radius: var(--radius-lg); cursor: pointer; display: flex; align-items: center; justify-content: space-between; transition: all 0.2s;">
+          <div style="display: flex; align-items: center; gap: 0.85rem;">
+            <span style="font-size: 1.75rem;">💪</span>
+            <div>
+              <div style="font-weight: 700; font-size: 1.05rem; color: var(--text-main);">Build Muscle</div>
+              <div style="font-size: 0.85rem; color: var(--text-muted);">Get stronger, tone muscles, and increase lean mass</div>
+            </div>
+          </div>
+          <span style="color: var(--primary); font-size: 1.2rem; font-weight: bold; display: none;">✓</span>
+        </div>
+
+        <div class="goal-card" data-goal="General Wellness" style="border: 2px solid var(--border-color); background: #ffffff; padding: 1.15rem 1.25rem; border-radius: var(--radius-lg); cursor: pointer; display: flex; align-items: center; justify-content: space-between; transition: all 0.2s;">
+          <div style="display: flex; align-items: center; gap: 0.85rem;">
+            <span style="font-size: 1.75rem;">🌱</span>
+            <div>
+              <div style="font-weight: 700; font-size: 1.05rem; color: var(--text-main);">Improve General Wellness</div>
+              <div style="font-size: 0.85rem; color: var(--text-muted);">Feel healthy, active, flexible, and energized every day</div>
+            </div>
+          </div>
+          <span style="color: var(--primary); font-size: 1.2rem; font-weight: bold; display: none;">✓</span>
+        </div>
+
+        <div class="goal-card" data-goal="Endurance & Stamina" style="border: 2px solid var(--border-color); background: #ffffff; padding: 1.15rem 1.25rem; border-radius: var(--radius-lg); cursor: pointer; display: flex; align-items: center; justify-content: space-between; transition: all 0.2s;">
+          <div style="display: flex; align-items: center; gap: 0.85rem;">
+            <span style="font-size: 1.75rem;">🏃</span>
+            <div>
+              <div style="font-weight: 700; font-size: 1.05rem; color: var(--text-main);">Endurance & Stamina</div>
+              <div style="font-size: 0.85rem; color: var(--text-muted);">Improve cardio capacity, athletic stamina, and pacing</div>
+            </div>
+          </div>
+          <span style="color: var(--primary); font-size: 1.2rem; font-weight: bold; display: none;">✓</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 3: Intensity -->
+    <div class="wizard-step-pane" id="wizard-step-3" style="display: none;">
+      <div style="margin-bottom: 1.75rem;">
+        <span class="badge badge-primary" style="margin-bottom: 0.5rem;" id="step-badge-3">Step 3 of 4</span>
+        <h1 style="font-size: 1.75rem; margin-bottom: 0.35rem;">How hard do you want to train?</h1>
+        <p style="font-size: 0.95rem; color: var(--text-muted);">Select the weekly workout frequency that fits your schedule.</p>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 0.85rem;">
+        <div class="intensity-card" data-intensity="Low" style="border: 2px solid var(--border-color); background: #ffffff; padding: 1.15rem 1.25rem; border-radius: var(--radius-lg); cursor: pointer; transition: all 0.2s;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.25rem;">
+            <strong style="font-size: 1.05rem; color: var(--text-main);">🟢 Low Intensity</strong>
+            <span class="badge badge-muted">3 days / week</span>
+          </div>
+          <p style="font-size: 0.875rem; color: var(--text-muted); margin: 0;">Easy and sustainable. 30–35 minutes per session. Great for beginners.</p>
+        </div>
+
+        <div class="intensity-card selected" data-intensity="Medium" style="border: 2px solid var(--primary); background: var(--primary-surface); padding: 1.15rem 1.25rem; border-radius: var(--radius-lg); cursor: pointer; transition: all 0.2s;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.25rem;">
+            <strong style="font-size: 1.05rem; color: var(--primary);">🟡 Medium Intensity</strong>
+            <span class="badge badge-primary">4 days / week</span>
+          </div>
+          <p style="font-size: 0.875rem; color: var(--text-muted); margin: 0;">Balanced training and recovery. 40–45 minutes per session. Recommended for most users.</p>
+        </div>
+
+        <div class="intensity-card" data-intensity="High" style="border: 2px solid var(--border-color); background: #ffffff; padding: 1.15rem 1.25rem; border-radius: var(--radius-lg); cursor: pointer; transition: all 0.2s;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.25rem;">
+            <strong style="font-size: 1.05rem; color: var(--text-main);">🔴 High Intensity</strong>
+            <span class="badge badge-muted">5 days / week</span>
+          </div>
+          <p style="font-size: 0.875rem; color: var(--text-muted); margin: 0;">Challenging workouts. 50–60 minutes per session. For users ready for high volume.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 4: Review -->
+    <div class="wizard-step-pane" id="wizard-step-4" style="display: none;">
+      <div style="margin-bottom: 1.75rem;">
+        <span class="badge badge-accent" style="margin-bottom: 0.5rem;" id="step-badge-4">Step 4 of 4</span>
+        <h1 style="font-size: 1.75rem; margin-bottom: 0.35rem;">Review your information</h1>
+        <p style="font-size: 0.95rem; color: var(--text-muted);">Ready to build your personalized 7-day fitness routine.</p>
+      </div>
+
+      <div style="background-color: var(--bg-subtle); border-radius: var(--radius-lg); padding: 1.25rem; margin-bottom: 1.5rem; display: flex; flex-direction: column; gap: 0.75rem;">
+        <div style="display: flex; justify-content: space-between; font-size: 0.9rem; border-bottom: 1px dashed var(--border-color); padding-bottom: 0.5rem;">
+          <span style="color: var(--text-muted);">Name:</span>
+          <strong id="summary-name" style="color: var(--text-main);">Alex</strong>
+        </div>
+        <div style="display: flex; justify-content: space-between; font-size: 0.9rem; border-bottom: 1px dashed var(--border-color); padding-bottom: 0.5rem;">
+          <span style="color: var(--text-muted);">Age & Bodyweight:</span>
+          <strong><span id="summary-age">28 yrs</span> · <span id="summary-weight">70 kg</span> (<span id="summary-height">175 cm</span>)</strong>
+        </div>
+        <div style="display: flex; justify-content: space-between; font-size: 0.9rem; border-bottom: 1px dashed var(--border-color); padding-bottom: 0.5rem;">
+          <span style="color: var(--text-muted);">Primary Goal:</span>
+          <strong id="summary-goal" style="color: var(--primary);">Weight Loss</strong>
+        </div>
+        <div style="display: flex; justify-content: space-between; font-size: 0.9rem; border-bottom: 1px dashed var(--border-color); padding-bottom: 0.5rem;">
+          <span style="color: var(--text-muted);">Workout Intensity:</span>
+          <strong id="summary-intensity">Medium (4 days/wk)</strong>
+        </div>
+        <div style="display: flex; justify-content: space-between; font-size: 0.9rem;">
+          <span style="color: var(--text-muted);">Equipment:</span>
+          <strong id="summary-equipment">Full Gym</strong>
+        </div>
+      </div>
+
+      <p style="font-size: 0.85rem; color: var(--text-muted); text-align: center; margin-bottom: 0.5rem;">
+        💡 <em>Your plan can change at any time as your needs evolve.</em>
+      </p>
+    </div>
+
+    <!-- Action Buttons Footer -->
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 2rem; padding-top: 1.25rem; border-top: 1px solid var(--border-color);">
+      <button type="button" class="btn btn-secondary" id="prevStepBtn" style="display: none;">
+        ← Back
+      </button>
+      <div style="margin-left: auto;">
+        <button type="button" class="btn btn-primary btn-lg" id="nextStepBtn">
+          Continue →
+        </button>
+        <button type="button" class="btn btn-primary btn-lg" id="submitOnboardBtn" style="display: none;">
+          ⚡ Generate My Plan →
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="/static/js/onboarding.js"></script>
+{% endblock %}

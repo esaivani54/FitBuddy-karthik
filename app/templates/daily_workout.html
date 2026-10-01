@@ -1,0 +1,415 @@
+{% extends "base.html" %}
+{% import "partials/exercise_illustrations.html" as illust %}
+
+{% block title %}Day {{ day_number }}: {{ day.workout_title }} — FitBuddy{% endblock %}
+
+{% block content %}
+<div class="workout-view-container" id="daily-workout-tracker"
+     data-plan-id="{{ plan.id }}"
+     data-user-id="{{ user.id }}"
+     data-day-number="{{ day_number }}">
+
+  <!-- 1. TOP BAR: Back Link & Day Navigation Switchers -->
+  <div class="workout-top-bar">
+    <a href="/workout?user_id={{ user.id }}&plan_id={{ plan.id }}&active_day={{ day_number }}" class="btn-back-pill">
+      <span>←</span> Back to Weekly Plan
+    </a>
+
+    <div class="day-nav-group">
+      {% set prev_day = 7 if day_number == 1 else (day_number - 1) %}
+      {% set next_day = 1 if day_number == 7 else (day_number + 1) %}
+      <a href="/workout/day/{{ prev_day }}?user_id={{ user.id }}&plan_id={{ plan.id }}" class="day-nav-btn day-nav-btn-ghost">
+        ← Day {{ prev_day }}
+      </a>
+      <a href="/workout/day/{{ next_day }}?user_id={{ user.id }}&plan_id={{ plan.id }}" class="day-nav-btn day-nav-btn-primary">
+        Day {{ next_day }} →
+      </a>
+    </div>
+  </div>
+
+  <!-- 2. HERO BANNER CARD -->
+  <div class="workout-hero-banner">
+    <div class="workout-hero-left">
+      <div class="workout-hero-header-row">
+        <!-- Date Block Badge -->
+        <div class="hero-date-badge">
+          <div class="hero-date-label">DAY {{ day_number }}</div>
+          <div class="hero-date-day">{{ day.day_name[:3]|upper }}</div>
+          <div class="hero-date-sub">{{ day_date_formatted }}</div>
+        </div>
+
+        <!-- Title & Subtitle -->
+        <div class="workout-hero-title-group">
+          <h1>{{ day.workout_title }}</h1>
+          <p class="workout-hero-focus">Focus: <strong>{{ day.focus }}</strong></p>
+
+          <div class="workout-hero-meta-row">
+            <span class="hero-meta-pill">
+              ⏱ <strong>{{ day.duration_minutes }} minutes</strong>
+            </span>
+            <span class="hero-meta-pill">
+              ⚡ <strong>{{ plan.intensity }} Intensity</strong>
+            </span>
+            <span class="hero-meta-pill">
+              🏋 <strong>{{ day.exercises|length }} Exercises</strong>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="workout-hero-quote">
+        “Better movement builds a stronger, happier you.”
+      </div>
+    </div>
+
+    <div class="workout-hero-right">
+      <img src="/static/images/hero_nature_yoga.jpg" alt="FitBuddy Hero Workout" class="workout-hero-img">
+      <div class="workout-hero-gradient-overlay"></div>
+    </div>
+  </div>
+
+  <!-- 3. SUB-TABS NAVIGATION BAR -->
+  <div class="workout-subtabs-bar">
+    <button type="button" class="workout-subtab-btn active" data-tab-target="tab-workout">
+      <span>🏋</span> Today's Workout
+    </button>
+    <button type="button" class="workout-subtab-btn" data-tab-target="tab-details">
+      <span>📋</span> Workout Details
+    </button>
+    <button type="button" class="workout-subtab-btn" data-tab-target="tab-tips">
+      <span>💡</span> Tips & Guidance
+    </button>
+    <button type="button" class="workout-subtab-btn" data-tab-target="tab-muscles">
+      <span>🎯</span> Muscles Worked
+    </button>
+  </div>
+
+  <!-- 4. MAIN 2-COLUMN WORKOUT GRID -->
+  <div class="workout-main-grid">
+    
+    <!-- LEFT COLUMN: Main Exercise List & Recovery Guidance -->
+    <div class="workout-main-content">
+      
+      <!-- Section Header -->
+      <div class="exercise-section-header">
+        <div class="exercise-section-title-wrap">
+          <div class="exercise-section-icon">🏋</div>
+          <div>
+            <h2 class="exercise-section-title">Today's Exercises</h2>
+            <p class="exercise-section-sub">Complete each exercise and check it off to track your progress.</p>
+          </div>
+        </div>
+
+        <div class="exercise-progress-counter">
+          <span class="exercise-counter-badge">
+            <span id="counter-completed-num">0</span> / {{ day.exercises|length }} completed
+            &nbsp;(<span id="counter-percent-num">0%</span>)
+          </span>
+          <button type="button" class="expand-all-btn" id="toggle-expand-all-btn">
+            <span>⤢</span> Expand All
+          </button>
+        </div>
+      </div>
+
+      <!-- Exercise Cards List -->
+      <div class="exercise-card-list" id="exercises-container">
+        {% for ex in day.exercises %}
+          {% set is_checked = ex.name in completed_exercises %}
+          <div class="exercise-card-modern {% if is_checked %}is-checked{% endif %}" 
+               data-exercise-name="{{ ex.name }}"
+               id="exercise-item-{{ loop.index }}">
+            
+            <div class="exercise-card-main-row">
+              <!-- Number badge -->
+              <div class="exercise-num-badge">{{ loop.index }}</div>
+
+              <!-- Checkbox -->
+              <div class="exercise-checkbox-btn" title="Toggle exercise completion">
+                {% if is_checked %}✓{% endif %}
+              </div>
+
+              <!-- Exercise SVG Illustration -->
+              {{ illust.render_exercise_svg(ex.name) }}
+
+              <!-- Information column -->
+              <div class="exercise-info-column">
+                <div class="exercise-card-title-row">
+                  <h3 class="exercise-card-title">{{ ex.name }}</h3>
+                </div>
+
+                <p class="exercise-card-desc">
+                  {% if 'squat' in ex.name|lower %}Squat down and reach your arms overhead, keeping your core engaged and chest tall.
+                  {% elif 'push-up' in ex.name|lower or 'pushup' in ex.name|lower or 'bench' in ex.name|lower %}Keep your body in a straight line and lower with control, driving powerfully upward.
+                  {% elif 'bird-dog' in ex.name|lower %}Extend opposite arm and leg while keeping your core stable and hips square.
+                  {% elif 'bridge' in ex.name|lower %}Squeeze your glutes at the top and hold for a moment before controlled descent.
+                  {% elif 'plank' in ex.name|lower %}Keep your body straight, ribs pulled inward, and breathe rhythmically.
+                  {% elif 'deadlift' in ex.name|lower %}Hinge at the hips with a neutral spine, driving through heels to stand.
+                  {% elif 'row' in ex.name|lower or 'pull' in ex.name|lower %}Retract shoulder blades and drive elbows back with maximum squeeze.
+                  {% elif 'lunge' in ex.name|lower %}Step forward with control, keeping torso upright and knee tracking over toes.
+                  {% else %}{{ ex.notes or "Execute with disciplined form, focusing on smooth muscular contraction." }}
+                  {% endif %}
+                </p>
+
+                <div class="exercise-meta-tags-row">
+                  <span class="exercise-meta-tag">⏱ Rest: <strong>{{ ex.rest }}</strong></span>
+                  <span class="exercise-meta-tag">⚡ Tempo: <strong>{{ ex.tempo or "2-0-2" }}</strong></span>
+                  <span class="exercise-meta-tag">🎯 Target: <strong>{{ ex.target_muscles }}</strong></span>
+                </div>
+
+                <!-- Tip banner -->
+                <div class="exercise-tip-callout">
+                  💡 <strong>Tip:</strong> {{ ex.notes or "Focus on full range of motion and controlled eccentric tempo." }}
+                </div>
+              </div>
+
+              <!-- Reps badge & Chevron -->
+              <div class="exercise-card-right-group">
+                <div class="exercise-reps-pill">
+                  {{ ex.sets }} × {{ ex.reps }}
+                </div>
+                <div class="exercise-expand-chevron">⌵</div>
+              </div>
+            </div>
+
+            <!-- Expandable Drawer Details -->
+            <div class="exercise-drawer-content">
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 0.5rem;">
+                <div>
+                  <strong style="color: var(--text-main); font-size: 0.8rem; text-transform: uppercase;">Biomechanical Execution:</strong>
+                  <ul style="margin: 0.35rem 0 0 1.25rem; font-size: 0.825rem; color: var(--text-muted); line-height: 1.5;">
+                    <li>Tempo: {{ ex.tempo or "2s lowering, 0s pause, 2s concentric" }}</li>
+                    <li>Rest Interval: {{ ex.rest }} between sets</li>
+                    <li>Primary Target: {{ ex.target_muscles }}</li>
+                  </ul>
+                </div>
+                <div>
+                  <strong style="color: var(--text-main); font-size: 0.8rem; text-transform: uppercase;">Coach Form Cue:</strong>
+                  <p style="margin: 0.35rem 0 0; font-size: 0.825rem; color: var(--text-muted); line-height: 1.5;">
+                    {{ ex.notes or "Maintain continuous tension without locking joints abruptly at lockout." }}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        {% endfor %}
+      </div>
+
+      <!-- Extra Tab Panels (Hidden by default, shown via sub-tabs) -->
+      <div id="tab-details-content" class="card" style="display: none; margin-top: 1rem; padding: 1.5rem; border-radius: 16px;">
+        <h3 style="font-size: 1.15rem; margin-bottom: 0.75rem;">📋 Workout Details & Split</h3>
+        <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1rem;">
+          {{ plan.summary }}
+        </p>
+        {% if day.warmup %}
+          <div style="background: var(--bg-subtle); padding: 1rem; border-radius: 12px; margin-bottom: 1rem;">
+            <strong style="font-size: 0.85rem; color: var(--primary); text-transform: uppercase;">🔥 Dynamic Warmup (3–5 min):</strong>
+            <ul style="margin: 0.5rem 0 0 1.25rem; font-size: 0.85rem; color: var(--text-main);">
+              {% for w in day.warmup %}
+                <li>{{ w.exercise }} — <span style="color: var(--text-muted);">{{ w.duration_or_reps }}</span></li>
+              {% endfor %}
+            </ul>
+          </div>
+        {% endif %}
+      </div>
+
+      <div id="tab-tips-content" class="card" style="display: none; margin-top: 1rem; padding: 1.5rem; border-radius: 16px;">
+        <h3 style="font-size: 1.15rem; margin-bottom: 0.75rem;">💡 Training Guidance & Form Science</h3>
+        <div style="display: flex; flex-direction: column; gap: 0.75rem; font-size: 0.875rem; color: var(--text-main);">
+          <div style="padding: 0.75rem 1rem; background: #f0fdf4; border-radius: 10px; border: 1px solid #dcfce7;">
+            <strong>Controlled Eccentrics:</strong> Lower the weight under 2-3 seconds of control to recruit maximum motor units.
+          </div>
+          <div style="padding: 0.75rem 1rem; background: #f0f9ff; border-radius: 10px; border: 1px solid #e0f2fe;">
+            <strong>Diaphragmatic Breathing:</strong> Inhale during the preparation/lowering phase, exhale forcefully on exertion.
+          </div>
+          <div style="padding: 0.75rem 1rem; background: #fefce8; border-radius: 10px; border: 1px solid #fef08a;">
+            <strong>Hydration Cue:</strong> Take small sips of water during rest periods to prevent muscular cramping.
+          </div>
+        </div>
+      </div>
+
+      <div id="tab-muscles-content" class="card" style="display: none; margin-top: 1rem; padding: 1.5rem; border-radius: 16px;">
+        <h3 style="font-size: 1.15rem; margin-bottom: 0.75rem;">🎯 Targeted Muscle Groups</h3>
+        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+          {% for ex in day.exercises %}
+            <span class="hero-meta-pill" style="background: var(--primary-surface); color: var(--primary); border-color: var(--primary-border);">
+              {{ ex.target_muscles }}
+            </span>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- POST-WORKOUT RECOVERY 3-CARD STRIP -->
+      <div class="post-workout-recovery-strip">
+        <div class="recovery-strip-header">
+          <div class="recovery-icon-circle">🌱</div>
+          <div>
+            <h3 style="font-size: 1.05rem; font-weight: 800; color: var(--text-main); margin: 0 0 0.15rem;">
+              Post-Workout Recovery
+            </h3>
+            <p style="font-size: 0.825rem; color: var(--text-muted); margin: 0;">
+              Help your body recover and get ready for the next session.
+            </p>
+          </div>
+        </div>
+
+        <div class="recovery-cards-row">
+          <!-- Card 1: Hydration -->
+          <div class="recovery-mini-card recovery-mini-card-blue">
+            <div class="recovery-mini-icon">💧</div>
+            <div>
+              <h4 class="recovery-mini-title">Hydration</h4>
+              <p class="recovery-mini-text">Drink 500ml of water to replenish fluids lost during exercise.</p>
+            </div>
+          </div>
+
+          <!-- Card 2: Nutrition Tip -->
+          <div class="recovery-mini-card recovery-mini-card-green">
+            <div class="recovery-mini-icon">🥗</div>
+            <div>
+              <h4 class="recovery-mini-title">Nutrition Tip</h4>
+              <p class="recovery-mini-text">Have a balanced meal with lean protein, complex carbs, and vegetables.</p>
+            </div>
+          </div>
+
+          <!-- Card 3: Recovery Tip -->
+          <div class="recovery-mini-card recovery-mini-card-pink">
+            <div class="recovery-mini-icon">❤️</div>
+            <div>
+              <h4 class="recovery-mini-title">Recovery Tip</h4>
+              <p class="recovery-mini-text">Do 5–10 minutes of gentle stretching or light walking to cool down.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT COLUMN: Rest Timer, Workout Summary & Notes -->
+    <div class="workout-sidebar">
+      
+      <!-- 1. REST TIMER CIRCULAR WIDGET -->
+      <div class="sidebar-panel-card" id="rest-timer-widget">
+        <div class="sidebar-panel-header">
+          <h3 class="sidebar-panel-title">
+            <span>⏱</span> Rest Timer
+          </h3>
+          <button type="button" class="btn-custom-time-link" id="btn-custom-timer">
+            Set Custom Time
+          </button>
+        </div>
+
+        <div class="circular-timer-container">
+          <div class="circular-dial-wrap">
+            <svg class="circular-timer-svg" viewBox="0 0 160 160">
+              <circle class="circular-timer-bg-circle" cx="80" cy="80" r="70"></circle>
+              <circle class="circular-timer-progress-circle" id="timer-svg-circle" cx="80" cy="80" r="70"></circle>
+            </svg>
+            <div class="timer-center-text">
+              <div class="timer-number-large" id="workout-timer-display">00:45</div>
+              <div class="timer-label-sub">Rest Time</div>
+            </div>
+          </div>
+
+          <div class="timer-action-buttons-row">
+            <button type="button" class="timer-control-btn timer-control-btn-start" id="timer-start-btn">
+              <span>▶</span> Start
+            </button>
+            <button type="button" class="timer-control-btn timer-control-btn-ghost" id="timer-pause-btn" style="display: none;">
+              <span>⏸</span> Pause
+            </button>
+            <button type="button" class="timer-control-btn timer-control-btn-ghost" id="timer-reset-btn">
+              <span>↺</span> Reset
+            </button>
+          </div>
+        </div>
+
+        <div class="timer-info-tip">
+          <span>💧</span>
+          <div>
+            Rest for <strong id="timer-rest-duration-text">45 seconds</strong> between sets. Use this time to focus on your breathing and stay hydrated.
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. WORKOUT SUMMARY CARD -->
+      <div class="sidebar-panel-card">
+        <div class="sidebar-panel-header">
+          <h3 class="sidebar-panel-title">
+            <span>📊</span> Workout Summary
+          </h3>
+          <span class="workout-summary-status-pill {% if log and log.completed %}status-pill-completed{% else %}status-pill-in-progress{% endif %}" id="workout-summary-status-tag">
+            {% if log and log.completed %}Completed{% else %}In Progress{% endif %}
+          </span>
+        </div>
+
+        <div class="summary-metrics-grid">
+          <div class="summary-metric-item">
+            <span class="summary-metric-label">⏱ Duration</span>
+            <span class="summary-metric-value">{{ day.duration_minutes }} mins</span>
+          </div>
+          <div class="summary-metric-item">
+            <span class="summary-metric-label">⚡ Intensity</span>
+            <span class="summary-metric-value">{{ plan.intensity }}</span>
+          </div>
+          <div class="summary-metric-item">
+            <span class="summary-metric-label">🏋 Exercises</span>
+            <span class="summary-metric-value">{{ day.exercises|length }}</span>
+          </div>
+          <div class="summary-metric-item">
+            <span class="summary-metric-label">✓ Completed</span>
+            <span class="summary-metric-value"><span id="summary-completed-count">0</span> / {{ day.exercises|length }}</span>
+          </div>
+        </div>
+
+        <div class="summary-progress-wrapper">
+          <div class="summary-progress-header">
+            <span>Progress</span>
+            <span id="summary-progress-percent">0%</span>
+          </div>
+          <div class="summary-progress-track">
+            <div class="summary-progress-bar" id="summary-progress-bar-fill" style="width: 0%;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. PERSONAL NOTES CARD -->
+      <div class="sidebar-panel-card">
+        <div class="sidebar-panel-header">
+          <h3 class="sidebar-panel-title">
+            <span>📝</span> Personal Notes
+          </h3>
+        </div>
+
+        <textarea id="workout-session-notes" class="notes-textarea-box" rows="3" 
+                  maxlength="500"
+                  placeholder="How did today's workout feel? Any notes, improvements or observations?">{{ log.notes if log and log.notes else '' }}</textarea>
+
+        <div class="notes-footer-row">
+          <span class="notes-char-counter" id="notes-char-counter">0/500</span>
+          <button type="button" class="btn-save-note" id="btn-save-notes">
+            Save Note
+          </button>
+        </div>
+      </div>
+
+      <!-- 4. PRIMARY COMPLETION CTA BUTTON -->
+      <button type="button" class="btn-mark-workout-complete {% if log and log.completed %}is-completed{% endif %}" 
+              id="mark-day-complete-btn" 
+              data-completed="{{ 'true' if log and log.completed else 'false' }}">
+        {% if log and log.completed %}
+          <span>✓</span> Workout Completed
+        {% else %}
+          <span>✓</span> Mark Workout Complete
+        {% endif %}
+      </button>
+
+    </div>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="/static/js/workout.js"></script>
+{% endblock %}

@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block title %}Nutrition & Recovery — FitBuddy{% endblock %}
+
+{% block content %}
+<div class="container" style="padding-top: 1.5rem; padding-bottom: 3.5rem; max-width: 1080px;">
+  
+  <!-- Header -->
+  <div style="margin-bottom: 1.5rem;">
+    <h1 style="font-size: 1.75rem; font-weight: 800; color: var(--text-main); margin-bottom: 0.25rem; letter-spacing: -0.02em;">
+      Nutrition & Recovery
+    </h1>
+    <p style="font-size: 0.95rem; color: var(--text-muted); margin: 0;">
+      Simple nutrition and recovery guidance for your <strong>{{ user.goal }}</strong> goal.
+    </p>
+  </div>
+
+  <!-- 1. TODAY'S TIP (Main Content Section) -->
+  <div class="card" style="border-left: 4px solid var(--primary); padding: 1.5rem 1.75rem; border-radius: 14px; margin-bottom: 1.5rem; background: #ffffff;">
+    <div style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--primary); margin-bottom: 0.35rem; letter-spacing: 0.05em;">
+      TODAY'S TIP
+    </div>
+    <h2 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--text-main);">
+      Post-Workout Recovery & Meals
+    </h2>
+    <p style="font-size: 0.95rem; color: var(--text-main); line-height: 1.6; margin: 0;">
+      {{ nutrition.daily_tips.get('nutrition', 'Eat a balanced meal containing protein, carbohydrates, and vegetables after training.') }}
+    </p>
+  </div>
+
+  <!-- 2. DAILY TARGETS (Compact Horizontal Metric Row) -->
+  <div class="card" style="padding: 1.25rem 1.5rem; border-radius: 14px; margin-bottom: 1.5rem; background: #ffffff;">
+    <div style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.85rem; letter-spacing: 0.05em;">
+      DAILY TARGETS
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; align-items: center;">
+      
+      <div style="padding: 0.75rem 1rem; background: var(--bg-subtle); border-radius: var(--radius-md);">
+        <div style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Protein</div>
+        <div style="font-size: 1.35rem; font-weight: 800; color: var(--primary); margin: 0.15rem 0;">
+          {{ nutrition.macro_split.get('protein', '').split(' ')[0] or '90-120g' }}
+        </div>
+        <div style="font-size: 0.75rem; color: var(--text-muted);">Daily target for recovery</div>
+      </div>
+
+      <div style="padding: 0.75rem 1rem; background: var(--bg-subtle); border-radius: var(--radius-md);">
+        <div style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Hydration</div>
+        <div style="font-size: 1.35rem; font-weight: 800; color: var(--text-main); margin: 0.15rem 0;">
+          {{ nutrition.hydration_target.split(' ')[0] }} L
+        </div>
+        <div style="font-size: 0.75rem; color: var(--text-muted);">Water throughout the day</div>
+      </div>
+
+      <div style="padding: 0.75rem 1rem; background: var(--bg-subtle); border-radius: var(--radius-md);">
+        <div style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Sleep</div>
+        <div style="font-size: 1.35rem; font-weight: 800; color: var(--text-main); margin: 0.15rem 0;">
+          {{ nutrition.sleep_target.split(' ')[0] }} hrs
+        </div>
+        <div style="font-size: 0.75rem; color: var(--text-muted);">Quality nighttime rest</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 3. RECOVERY & REST GUIDELINES -->
+  <div class="card" style="padding: 1.5rem 1.75rem; border-radius: 14px; margin-bottom: 1.5rem; background: #ffffff;">
+    <div style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.35rem; letter-spacing: 0.05em;">
+      RECOVERY
+    </div>
+    <h3 style="font-size: 1.15rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.5rem;">
+      Movement & Sleep Guidelines
+    </h3>
+    <p style="font-size: 0.925rem; color: var(--text-muted); line-height: 1.55; margin: 0 0 1rem 0;">
+      {{ nutrition.daily_tips.get('recovery', 'Take short movement breaks throughout the day and prioritize adequate sleep.') }}
+    </p>
+
+    {% if nutrition.recovery_protocols %}
+      <div style="font-size: 0.875rem; color: var(--text-muted); display: flex; flex-direction: column; gap: 0.4rem;">
+        {% for proto in nutrition.recovery_protocols[:2] %}
+          <div>• {{ proto }}</div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  </div>
+
+  <!-- Clean Safety Note -->
+  <div style="font-size: 0.8rem; color: var(--text-subtle); text-align: center; margin-top: 2rem;">
+    FitBuddy provides educational wellness guidance. Consult a healthcare professional for clinical nutrition advice.
+  </div>
+
+</div>
+{% endblock %}

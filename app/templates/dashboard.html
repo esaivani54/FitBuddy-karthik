@@ -1,0 +1,159 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard — FitBuddy{% endblock %}
+
+{% block content %}
+<div class="container" style="padding-top: 1.5rem; padding-bottom: 3rem; max-width: 1160px;">
+  
+  <!-- 1. COMPACT TOP GREETING -->
+  <div style="margin-bottom: 1.5rem;">
+    <h1 style="font-size: 1.75rem; font-weight: 800; color: var(--text-main); margin-bottom: 0.25rem; letter-spacing: -0.02em;">
+      Hello, {{ user.name.split(' ')[0] }}
+    </h1>
+    <p style="font-size: 0.95rem; color: var(--text-muted); margin: 0;">
+      Your plan for today.
+    </p>
+  </div>
+
+  <!-- 2. TODAY'S WORKOUT (Primary Featured Section) -->
+  {% if today_day %}
+    <div class="card" style="border: 1px solid var(--primary-border); background: linear-gradient(180deg, #ffffff 0%, var(--primary-surface) 100%); padding: 1.75rem 2rem; border-radius: 16px; box-shadow: var(--shadow-sm); margin-bottom: 1.5rem;">
+      <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.5rem;">
+        <span style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--primary); letter-spacing: 0.05em;">
+          TODAY'S WORKOUT · {{ today_day.day_name }} · {{ today_day.duration_minutes }} min
+        </span>
+        {% if today_day.day_number in completed_days %}
+          <span style="font-size: 0.8rem; font-weight: 700; color: var(--success); background: var(--success-light); padding: 0.2rem 0.6rem; border-radius: var(--radius-full);">
+            ✓ Completed
+          </span>
+        {% endif %}
+      </div>
+
+      <h2 style="font-size: 1.5rem; font-weight: 800; margin-bottom: 0.35rem; color: var(--text-main);">
+        {{ today_day.workout_title }}
+      </h2>
+
+      <p style="font-size: 0.925rem; color: var(--text-muted); margin-bottom: 1.25rem;">
+        Focus: <strong>{{ today_day.focus }}</strong>
+        {% if today_day.exercises and not today_day.is_rest_day %}
+          · {{ today_day.exercises|length }} exercises
+        {% elif today_day.is_rest_day %}
+          · Active Recovery Day
+        {% endif %}
+      </p>
+
+      <div style="display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center;">
+        <a href="/workout/day/{{ today_day.day_number }}?user_id={{ user.id }}&plan_id={{ active_plan.id }}" class="btn btn-primary">
+          {% if today_day.day_number in completed_days %}
+            ✓ Review Workout
+          {% else %}
+            Start Workout →
+          {% endif %}
+        </a>
+        <a href="/workout?user_id={{ user.id }}" class="btn btn-secondary">
+          View Full Plan
+        </a>
+      </div>
+    </div>
+  {% endif %}
+
+  <!-- 3. COMPACT WEEKLY STRIP -->
+  <div class="card" style="padding: 1.25rem 1.5rem; border-radius: 16px; margin-bottom: 1.5rem; background: #ffffff;">
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.85rem;">
+      <h3 style="font-size: 1rem; font-weight: 700; margin: 0; color: var(--text-main);">Weekly Schedule</h3>
+      <span style="font-size: 0.8rem; color: var(--text-muted);">Plan Version {{ active_plan.version }}</span>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 0.5rem; text-align: center;">
+      {% for day in days_data %}
+        {% set is_done = day.day_number in completed_days %}
+        {% set is_today = (day.day_number == today_day.day_number if today_day else day.day_number == 1) %}
+        <a href="/workout/day/{{ day.day_number }}?user_id={{ user.id }}&plan_id={{ active_plan.id }}" 
+           class="schedule-day-item {% if is_today %}is-today{% elif is_done %}is-done{% endif %}"
+           title="{{ day.day_name }}: {{ day.workout_title }}">
+          <div style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted);">{{ day.day_name[:3] }}</div>
+          <div class="schedule-day-indicator {% if is_today %}is-today{% endif %}">
+            {% if is_done %}
+              <span style="color: var(--accent);">✓</span>
+            {% elif is_today %}
+              <span>●</span>
+            {% elif day.is_rest_day %}
+              <span style="color: var(--text-subtle);">—</span>
+            {% else %}
+              <span style="color: var(--text-subtle);">○</span>
+            {% endif %}
+          </div>
+          <div style="font-size: 0.7rem; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+            {% if day.is_rest_day %}Rest{% else %}{{ day.duration_minutes }}m{% endif %}
+          </div>
+        </a>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- 4. CLEAN 3-COLUMN LOWER INFORMATION AREA (Goal, Current Plan, Nutrition) -->
+  <div class="grid grid-3" style="gap: 1.25rem;">
+    
+    <!-- GOAL -->
+    <div class="card" style="padding: 1.25rem 1.35rem; border-radius: 14px; display: flex; flex-direction: column; justify-content: space-between;">
+      <div>
+        <div style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.35rem; letter-spacing: 0.04em;">
+          Goal
+        </div>
+        <h4 style="font-size: 1.1rem; margin-bottom: 0.25rem; color: var(--text-main);">{{ user.goal }}</h4>
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0;">
+          {{ user.intensity }} intensity · {{ user.equipment or 'Full Gym' }}
+        </p>
+      </div>
+      <div style="margin-top: 1rem; padding-top: 0.65rem; border-top: 1px solid var(--border-light);">
+        <a href="/profile?user_id={{ user.id }}" style="font-size: 0.825rem; font-weight: 600; color: var(--primary); text-decoration: none;">
+          Profile Details →
+        </a>
+      </div>
+    </div>
+
+    <!-- CURRENT PLAN -->
+    <div class="card" style="padding: 1.25rem 1.35rem; border-radius: 14px; display: flex; flex-direction: column; justify-content: space-between;">
+      <div>
+        <div style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.35rem; letter-spacing: 0.04em;">
+          Current Plan
+        </div>
+        <h4 style="font-size: 1.1rem; margin-bottom: 0.25rem; color: var(--text-main);">Plan Version {{ active_plan.version }}</h4>
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0;">
+          {{ days_data|length }} days periodized routine
+        </p>
+      </div>
+      <div style="margin-top: 1rem; padding-top: 0.65rem; border-top: 1px solid var(--border-light);">
+        <a href="/refine?user_id={{ user.id }}&plan_id={{ active_plan.id }}" style="font-size: 0.825rem; font-weight: 600; color: var(--primary); text-decoration: none;">
+          Refine Plan →
+        </a>
+      </div>
+    </div>
+
+    <!-- NUTRITION & RECOVERY SUMMARY -->
+    <div class="card" style="padding: 1.25rem 1.35rem; border-radius: 14px; display: flex; flex-direction: column; justify-content: space-between;">
+      <div>
+        <div style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.35rem; letter-spacing: 0.04em;">
+          Nutrition & Fueling
+        </div>
+        {% if nutrition %}
+          <p style="font-size: 0.85rem; color: var(--text-main); margin: 0; line-height: 1.45;">
+            {{ nutrition.daily_tips.get('nutrition')[:100] }}...
+          </p>
+        {% else %}
+          <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0;">
+            Protein and hydration guidance ready.
+          </p>
+        {% endif %}
+      </div>
+      <div style="margin-top: 1rem; padding-top: 0.65rem; border-top: 1px solid var(--border-light);">
+        <a href="/nutrition?user_id={{ user.id }}" style="font-size: 0.825rem; font-weight: 600; color: var(--primary); text-decoration: none;">
+          View Nutrition →
+        </a>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+{% endblock %}

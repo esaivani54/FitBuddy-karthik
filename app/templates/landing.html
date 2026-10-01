@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+
+{% block title %}FitBuddy — AI-Powered Fitness & Nutrition Platform{% endblock %}
+
+{% block content %}
+<div class="container">
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="hero-pill">
+      <span>✨ Powered by AI Coach</span>
+    </div>
+    <h1 class="hero-headline">
+      Personalized Fitness Plans <br>
+      <span class="hero-highlight">Made Simple for You</span>
+    </h1>
+    <p class="hero-subhead">
+      FitBuddy creates easy-to-follow workout routines and practical nutrition advice. Have a question, want to swap an exercise, or need an easier day? Your real-time AI Coach is here to help.
+    </p>
+
+    <div class="hero-actions">
+      <a href="/onboard" class="btn btn-primary btn-lg">
+        <span>Get Started</span>
+        <span>→</span>
+      </a>
+      {% if active_user %}
+        <a href="/dashboard?user_id={{ active_user.id }}" class="btn btn-secondary btn-lg">
+          <span>Go to Dashboard ({{ active_user.name.split(' ')[0] }})</span>
+        </a>
+      {% else %}
+        <a href="#how-it-works" class="btn btn-secondary btn-lg">
+          <span>How It Works</span>
+        </a>
+      {% endif %}
+    </div>
+  </section>
+
+  <!-- Value Props / Feature Grid -->
+  <section class="feature-grid">
+    <div class="feature-card">
+      <div class="feature-icon-wrapper">🏋️</div>
+      <h3>7-Day Personalized Plans</h3>
+      <p style="margin-top: 0.5rem;">
+        Clear daily workouts with warm-ups, step-by-step exercises, rest times, and cooldowns matched to your level.
+      </p>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon-wrapper">💬</div>
+      <h3>Real-Time AI Coach</h3>
+      <p style="margin-top: 0.5rem;">
+        Ask questions about your exercises, get home alternatives, and request routine adjustments anytime.
+      </p>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon-wrapper">🥗</div>
+      <h3>Nutrition & Recovery</h3>
+      <p style="margin-top: 0.5rem;">
+        Simple daily food, hydration, and sleep tips to keep you energized and recovering well without complex calorie counting.
+      </p>
+    </div>
+  </section>
+
+  <!-- How It Works Section -->
+  <section id="how-it-works" style="margin: 4.5rem 0; text-align: center;">
+    <h2 style="font-size: 2rem; margin-bottom: 0.75rem;">How FitBuddy Works</h2>
+    <p style="max-width: 600px; margin: 0 auto 3rem;">A simple, friendly process designed to help you stay consistent and build healthy habits.</p>
+
+    <div class="grid grid-4" style="text-align: left;">
+      <div class="card">
+        <div style="font-size: 1.5rem; font-weight: 800; color: var(--primary); margin-bottom: 0.5rem;">01</div>
+        <h4>Tell Us About You</h4>
+        <p style="margin-top: 0.4rem; font-size: 0.875rem;">Share basic details like your age, weight, and equipment in a quick 60-second setup.</p>
+      </div>
+
+      <div class="card">
+        <div style="font-size: 1.5rem; font-weight: 800; color: var(--primary); margin-bottom: 0.5rem;">02</div>
+        <h4>Choose Your Goal</h4>
+        <p style="margin-top: 0.4rem; font-size: 0.875rem;">Select whether you want to lose weight, build muscle, or improve general wellness.</p>
+      </div>
+
+      <div class="card">
+        <div style="font-size: 1.5rem; font-weight: 800; color: var(--primary); margin-bottom: 0.5rem;">03</div>
+        <h4>Get Your Plan</h4>
+        <p style="margin-top: 0.4rem; font-size: 0.875rem;">FitBuddy generates your custom 7-day routine with clear instructions and rest guides.</p>
+      </div>
+
+      <div class="card">
+        <div style="font-size: 1.5rem; font-weight: 800; color: var(--primary); margin-bottom: 0.5rem;">04</div>
+        <h4>Chat & Adapt</h4>
+        <p style="margin-top: 0.4rem; font-size: 0.875rem;">Ask your AI Coach for guidance or ask it to update your plan as your schedule evolves.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Goal Showcase Section -->
+  <section style="margin: 4.5rem 0;">
+    <div class="card" style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: #fff; padding: 3rem 2.5rem; border: none;">
+      <div style="max-width: 700px; margin: 0 auto; text-align: center;">
+        <span class="badge badge-primary" style="margin-bottom: 1rem;">Simple & Beginner-Friendly</span>
+        <h2 style="color: #fff; font-size: 2.25rem; margin-bottom: 1rem;">Fitness Guidance Built for Real Life</h2>
+        <p style="color: #94a3b8; margin-bottom: 2rem;">
+          No confusing fitness jargon or extreme workouts. Just practical guidance, sustainable routines, and your personal AI Coach.
+        </p>
+        <a href="/onboard" class="btn btn-primary btn-lg">Start Your Plan →</a>
+      </div>
+    </div>
+  </section>
+</div>
+{% endblock %}

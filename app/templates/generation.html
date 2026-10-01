@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block title %}Generating Your AI Plan — FitBuddy{% endblock %}
+
+{% block content %}
+<div class="container container-narrow" id="generation-container"
+     data-user-id="{{ user.id }}"
+     data-plan-id="{{ plan_id or '' }}"
+     data-is-refinement="{{ 'true' if is_refinement else 'false' }}"
+     data-feedback="{{ feedback }}"
+     data-quick-tags="{{ quick_tags }}">
+
+  <div style="max-width: 600px; margin: 3rem auto; text-align: center;">
+    
+    <!-- Active Generation Box -->
+    <div class="card" id="generation-active-box" style="padding: 2.5rem 2rem; box-shadow: var(--shadow-lg);">
+      <div style="width: 4rem; height: 4rem; border-radius: 50%; background: linear-gradient(135deg, var(--primary) 0%, #14b8a6 100%); margin: 0 auto 1.5rem; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 1.75rem; box-shadow: 0 0 20px rgba(13, 148, 136, 0.4); animation: pulseSubtle 2s infinite ease-in-out;">
+        ⚡
+      </div>
+
+      <h2 id="generation-status-text" style="font-size: 1.5rem; margin-bottom: 0.5rem;">
+        {% if is_refinement %}
+          Refining Your Plan Based on Feedback...
+        {% else %}
+          Building Your Personalized Plan...
+        {% endif %}
+      </h2>
+      
+      <p id="generation-status-desc" style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1.75rem;">
+        Calibrating 7-day routine, exercise selection, and nutrition protocols for <strong>{{ user.name }}</strong> ({{ user.goal }}).
+      </p>
+
+      <!-- Progress Bar -->
+      <div style="width: 100%; height: 8px; background-color: var(--bg-subtle); border-radius: var(--radius-full); overflow: hidden; margin-bottom: 2rem;">
+        <div id="generation-progress-fill" style="width: 15%; height: 100%; background: linear-gradient(90deg, var(--primary) 0%, #10b981 100%); border-radius: var(--radius-full); transition: width 0.4s ease;"></div>
+      </div>
+
+      <!-- Stage Checklist -->
+      <div style="text-align: left; display: flex; flex-direction: column; gap: 0.75rem;">
+        <div class="gen-stage-item active" style="display: flex; align-items: center; gap: 0.75rem; font-size: 0.875rem; color: var(--text-main);">
+          <div class="gen-stage-icon" style="width: 1.5rem; height: 1.5rem; border-radius: 50%; background: var(--bg-subtle); display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700;">1</div>
+          <span>Analyzing physiological metrics & target goal</span>
+        </div>
+
+        <div class="gen-stage-item pending" style="display: flex; align-items: center; gap: 0.75rem; font-size: 0.875rem; color: var(--text-muted);">
+          <div class="gen-stage-icon" style="width: 1.5rem; height: 1.5rem; border-radius: 50%; background: var(--bg-subtle); display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700;">2</div>
+          <span>Structuring 7-day periodized split & exercise sequencing</span>
+        </div>
+
+        <div class="gen-stage-item pending" style="display: flex; align-items: center; gap: 0.75rem; font-size: 0.875rem; color: var(--text-muted);">
+          <div class="gen-stage-icon" style="width: 1.5rem; height: 1.5rem; border-radius: 50%; background: var(--bg-subtle); display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700;">3</div>
+          <span>Calibrating volume, rep tempos & rest intervals</span>
+        </div>
+
+        <div class="gen-stage-item pending" style="display: flex; align-items: center; gap: 0.75rem; font-size: 0.875rem; color: var(--text-muted);">
+          <div class="gen-stage-icon" style="width: 1.5rem; height: 1.5rem; border-radius: 50%; background: var(--bg-subtle); display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700;">4</div>
+          <span>Compiling goal-specific nutrition & recovery guidance</span>
+        </div>
+
+        <div class="gen-stage-item pending" style="display: flex; align-items: center; gap: 0.75rem; font-size: 0.875rem; color: var(--text-muted);">
+          <div class="gen-stage-icon" style="width: 1.5rem; height: 1.5rem; border-radius: 50%; background: var(--bg-subtle); display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700;">5</div>
+          <span>Finalizing and persisting your blueprint</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Error Fallback Box (Hidden by default) -->
+    <div class="card" id="generation-error-box" style="display: none; padding: 2rem; border-color: var(--danger); box-shadow: var(--shadow-md);">
+      <div style="width: 3.5rem; height: 3.5rem; border-radius: 50%; background-color: var(--danger-light); color: var(--danger); margin: 0 auto 1rem; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
+        ⚠️
+      </div>
+      <h3 style="color: var(--text-main); margin-bottom: 0.5rem;">Generation Interrupted</h3>
+      <p id="generation-error-message" style="color: var(--danger); font-size: 0.9rem; margin-bottom: 1.5rem;">
+        An unexpected error occurred while communicating with the AI service.
+      </p>
+      <div style="display: flex; gap: 1rem; justify-content: center;">
+        <button onclick="window.location.reload()" class="btn btn-primary">Try Again</button>
+        <a href="/profile?user_id={{ user.id }}" class="btn btn-secondary">Return to Profile</a>
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="/static/js/generation.js"></script>
+{% endblock %}

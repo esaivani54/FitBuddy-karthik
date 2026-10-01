@@ -1,0 +1,154 @@
+{# SVG Exercise Illustration Helper for FitBuddy #}
+{% macro render_exercise_svg(ex_name) %}
+{% set name_lower = (ex_name or '')|lower %}
+
+<div class="exercise-thumb-box" aria-hidden="true">
+{% if 'squat' in name_lower or 'overhead' in name_lower %}
+  <!-- Squat / Overhead Reach Illustration -->
+  <svg viewBox="0 0 100 80" class="exercise-svg" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect width="100" height="80" rx="10" fill="#f0fdf9"/>
+    <!-- Head -->
+    <circle cx="50" cy="18" r="5.5" fill="#0d9488"/>
+    <!-- Raised Arms Overhead -->
+    <path d="M48 24 L36 10 M52 24 L64 10" stroke="#0d9488" stroke-width="3" stroke-linecap="round"/>
+    <!-- Torso -->
+    <path d="M50 24 L50 44" stroke="#0d9488" stroke-width="4" stroke-linecap="round"/>
+    <!-- Squatting Hips & Thighs -->
+    <path d="M50 44 L37 54 L39 68" stroke="#0f766e" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M50 44 L63 54 L61 68" stroke="#0f766e" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <!-- Feet -->
+    <path d="M34 68 L42 68 M58 68 L66 68" stroke="#134e4a" stroke-width="2.5" stroke-linecap="round"/>
+    <!-- Movement indicator arrow -->
+    <path d="M26 38 L26 26 M26 26 L23 29 M26 26 L29 29" stroke="#10b981" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+
+{% elif 'push-up' in name_lower or 'pushup' in name_lower or 'bench' in name_lower or 'press' in name_lower %}
+  <!-- Push-ups / Floor Press Illustration -->
+  <svg viewBox="0 0 100 80" class="exercise-svg" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect width="100" height="80" rx="10" fill="#f0fdf9"/>
+    <!-- Floor Line -->
+    <line x1="12" y1="64" x2="88" y2="64" stroke="#e2e8f0" stroke-width="2" stroke-linecap="round"/>
+    <!-- Head -->
+    <circle cx="28" cy="38" r="5.5" fill="#0d9488"/>
+    <!-- Torso & Incline Body Line -->
+    <path d="M30 43 L72 58" stroke="#0d9488" stroke-width="4.5" stroke-linecap="round"/>
+    <!-- Arms supporting weight -->
+    <path d="M38 46 L34 64" stroke="#0f766e" stroke-width="3.5" stroke-linecap="round"/>
+    <!-- Feet at base -->
+    <circle cx="74" cy="62" r="3" fill="#134e4a"/>
+    <!-- Pulse target cue -->
+    <circle cx="42" cy="46" r="3" fill="#f59e0b"/>
+  </svg>
+
+{% elif 'bird-dog' in name_lower or 'bird dog' in name_lower %}
+  <!-- Bird-Dog Quadruped Reach -->
+  <svg viewBox="0 0 100 80" class="exercise-svg" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect width="100" height="80" rx="10" fill="#f0fdf9"/>
+    <!-- Floor line -->
+    <line x1="12" y1="64" x2="88" y2="64" stroke="#e2e8f0" stroke-width="2" stroke-linecap="round"/>
+    <!-- Head -->
+    <circle cx="34" cy="35" r="5" fill="#0d9488"/>
+    <!-- Forward extended Arm -->
+    <path d="M38 40 L16 38" stroke="#0d9488" stroke-width="3" stroke-linecap="round"/>
+    <!-- Supporting Arm to ground -->
+    <path d="M42 42 L42 64" stroke="#0f766e" stroke-width="3" stroke-linecap="round"/>
+    <!-- Torso Spine Flat -->
+    <path d="M38 41 L62 43" stroke="#0d9488" stroke-width="4" stroke-linecap="round"/>
+    <!-- Supporting Knee -->
+    <path d="M58 43 L56 64" stroke="#0f766e" stroke-width="3" stroke-linecap="round"/>
+    <!-- Backward extended Leg -->
+    <path d="M62 43 L86 38" stroke="#0d9488" stroke-width="3" stroke-linecap="round"/>
+  </svg>
+
+{% elif 'bridge' in name_lower or 'thrust' in name_lower %}
+  <!-- Glute Bridge Illustration -->
+  <svg viewBox="0 0 100 80" class="exercise-svg" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect width="100" height="80" rx="10" fill="#f0fdf9"/>
+    <!-- Floor line -->
+    <line x1="12" y1="64" x2="88" y2="64" stroke="#e2e8f0" stroke-width="2" stroke-linecap="round"/>
+    <!-- Head on floor -->
+    <circle cx="24" cy="58" r="5" fill="#0d9488"/>
+    <!-- Upper Back on floor -->
+    <path d="M28 60 L38 58" stroke="#0d9488" stroke-width="4" stroke-linecap="round"/>
+    <!-- Elevated Bridge Torso -->
+    <path d="M38 58 L54 40" stroke="#0d9488" stroke-width="4.5" stroke-linecap="round"/>
+    <!-- Bent Knees to feet on floor -->
+    <path d="M54 40 L68 44 L70 64" stroke="#0f766e" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <!-- Upward arrow -->
+    <path d="M52 34 L52 24 M52 24 L49 27 M52 24 L55 27" stroke="#10b981" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+
+{% elif 'plank' in name_lower %}
+  <!-- Plank Hold Illustration -->
+  <svg viewBox="0 0 100 80" class="exercise-svg" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect width="100" height="80" rx="10" fill="#f0fdf9"/>
+    <!-- Floor line -->
+    <line x1="12" y1="64" x2="88" y2="64" stroke="#e2e8f0" stroke-width="2" stroke-linecap="round"/>
+    <!-- Head -->
+    <circle cx="28" cy="46" r="5" fill="#0d9488"/>
+    <!-- Forearm Support -->
+    <path d="M34 50 L34 64 L42 64" stroke="#0f766e" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    <!-- Rigid Straight Body Line -->
+    <path d="M32 50 L76 56" stroke="#0d9488" stroke-width="4.5" stroke-linecap="round"/>
+    <!-- Toes grounded -->
+    <circle cx="76" cy="62" r="3" fill="#134e4a"/>
+    <!-- Core activation spark -->
+    <circle cx="50" cy="52" r="2.5" fill="#f59e0b"/>
+  </svg>
+
+{% elif 'deadlift' in name_lower or 'hinge' in name_lower %}
+  <!-- Deadlift / Hip Hinge Illustration -->
+  <svg viewBox="0 0 100 80" class="exercise-svg" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect width="100" height="80" rx="10" fill="#f0fdf9"/>
+    <!-- Head -->
+    <circle cx="36" cy="24" r="5" fill="#0d9488"/>
+    <!-- Flat Back Torso -->
+    <path d="M38 28 L56 38" stroke="#0d9488" stroke-width="4.5" stroke-linecap="round"/>
+    <!-- Arms hanging with barbell/DB -->
+    <path d="M42 30 L40 56" stroke="#0f766e" stroke-width="3" stroke-linecap="round"/>
+    <rect x="32" y="55" width="16" height="5" rx="2.5" fill="#334155"/>
+    <!-- Soft Knees / Hips Hinge -->
+    <path d="M56 38 L54 52 L56 68" stroke="#0f766e" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+
+{% elif 'row' in name_lower or 'pull' in name_lower %}
+  <!-- Pull / Row Movement -->
+  <svg viewBox="0 0 100 80" class="exercise-svg" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect width="100" height="80" rx="10" fill="#f0fdf9"/>
+    <!-- Head -->
+    <circle cx="44" cy="22" r="5" fill="#0d9488"/>
+    <!-- Torso -->
+    <path d="M45 27 L48 48" stroke="#0d9488" stroke-width="4" stroke-linecap="round"/>
+    <!-- Bent Arms Rowing Back -->
+    <path d="M45 30 L32 36 L30 48" stroke="#0f766e" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <!-- Legs -->
+    <path d="M48 48 L44 58 L45 68 M48 48 L56 58 L58 68" stroke="#0f766e" stroke-width="3" stroke-linecap="round"/>
+  </svg>
+
+{% elif 'lunge' in name_lower or 'split' in name_lower or 'walk' in name_lower %}
+  <!-- Lunge / Walk Dynamic Motion -->
+  <svg viewBox="0 0 100 80" class="exercise-svg" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect width="100" height="80" rx="10" fill="#f0fdf9"/>
+    <!-- Head -->
+    <circle cx="48" cy="18" r="5" fill="#0d9488"/>
+    <!-- Torso Upright -->
+    <path d="M48 23 L48 44" stroke="#0d9488" stroke-width="4" stroke-linecap="round"/>
+    <!-- Front Bent Leg -->
+    <path d="M48 44 L36 50 L38 68" stroke="#0f766e" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <!-- Rear Lunging Leg -->
+    <path d="M48 44 L62 54 L66 68" stroke="#0f766e" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+
+{% else %}
+  <!-- General Functional Fitness Pose -->
+  <svg viewBox="0 0 100 80" class="exercise-svg" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect width="100" height="80" rx="10" fill="#f0fdf9"/>
+    <circle cx="50" cy="20" r="6" fill="#0d9488"/>
+    <path d="M50 26 L50 50" stroke="#0d9488" stroke-width="4" stroke-linecap="round"/>
+    <path d="M34 32 L50 28 L66 32" stroke="#0f766e" stroke-width="3" stroke-linecap="round"/>
+    <path d="M50 50 L40 68 M50 50 L60 68" stroke="#0f766e" stroke-width="3.5" stroke-linecap="round"/>
+    <circle cx="50" cy="38" r="3" fill="#10b981"/>
+  </svg>
+{% endif %}
+</div>
+{% endmacro %}

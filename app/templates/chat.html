@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{% block title %}AI Fitness Coach — FitBuddy{% endblock %}
+
+{% block content %}
+<div class="container container-narrow" style="padding-top: 1rem; padding-bottom: 2.5rem;" data-user-id="{{ user.id }}">
+  
+  <!-- Page Header -->
+  <div style="margin-bottom: 1.25rem; text-align: center;">
+    <div style="display: inline-flex; align-items: center; gap: 0.4rem; background: var(--primary-light); color: var(--primary); padding: 0.25rem 0.75rem; border-radius: var(--radius-full); font-size: 0.75rem; font-weight: 700; margin-bottom: 0.5rem; text-transform: uppercase;">
+      ⚡ Real-Time AI Assistant
+    </div>
+    <h1 style="font-size: 2rem; margin-bottom: 0.35rem;">AI Coach</h1>
+    <p style="font-size: 0.95rem; color: var(--text-muted); max-width: 580px; margin: 0 auto;">
+      Your personal fitness assistant. Ask questions about your exercises, get substitution ideas, or adapt your weekly plan.
+    </p>
+  </div>
+
+  <!-- Active Plan Context Strip -->
+  {% if active_plan %}
+    <div style="background-color: var(--bg-surface); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 0.75rem 1.25rem; margin-bottom: 1.25rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem; font-size: 0.85rem; box-shadow: var(--shadow-xs);">
+      <div style="display: flex; align-items: center; gap: 0.6rem;">
+        <span style="font-size: 1.1rem;">📋</span>
+        <span>Active Plan: <strong>{{ active_plan.plan_title }} (v{{ active_plan.version }})</strong></span>
+        <span class="badge badge-primary">{{ user.goal }}</span>
+        <span class="badge badge-muted">{{ user.intensity }}</span>
+      </div>
+      <a href="/workout?user_id={{ user.id }}" class="btn btn-ghost btn-sm" style="padding: 0.25rem 0.6rem; font-size: 0.8rem;">
+        View Routine →
+      </a>
+    </div>
+  {% endif %}
+
+  <!-- Dedicated Chat Interface Box -->
+  <div class="card" style="padding: 0; overflow: hidden; display: flex; flex-direction: column; height: 600px; box-shadow: var(--shadow-md); border-radius: 20px;">
+    
+    <!-- Top Bar inside Card -->
+    <div style="padding: 0.85rem 1.25rem; background: #ffffff; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between;">
+      <div style="display: flex; align-items: center; gap: 0.6rem;">
+        <div style="width: 2rem; height: 2rem; border-radius: 50%; background: linear-gradient(135deg, var(--primary) 0%, #10b981 100%); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.9rem;">
+          ⚡
+        </div>
+        <div>
+          <div style="font-weight: 700; font-size: 0.9rem; color: var(--text-main);">FitBuddy Coach</div>
+          <div style="font-size: 0.75rem; color: var(--accent); font-weight: 600;">● Online · Personalized for {{ user.name.split(' ')[0] }}</div>
+        </div>
+      </div>
+
+      <button type="button" class="btn btn-ghost btn-sm" id="pageChatClearBtn" title="Clear conversation history">
+        🗑️ Clear Chat
+      </button>
+    </div>
+
+    <!-- Messages Scroll Area -->
+    <div class="chat-messages-container" id="pageChatMessagesContainer" style="flex: 1; padding: 1.25rem; background: #f8fafc; overflow-y: auto; display: flex; flex-direction: column; gap: 1rem;">
+      <div class="chat-message-row assistant-row">
+        <div class="chat-bubble-avatar">⚡</div>
+        <div>
+          <div class="chat-bubble">
+            <p>Hi <strong>{{ user.name.split(' ')[0] }}</strong>! 👋 I'm your AI Fitness Coach.</p>
+            <p>I know your current <strong>{{ user.goal }}</strong> routine and equipment setup. How can I assist you with your workout or nutrition today?</p>
+          </div>
+          <div class="chat-message-time">Just now</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Suggested Quick Questions -->
+    <div class="chat-suggestions-wrapper" id="pageChatSuggestions" style="padding: 0.5rem 1rem; background: #ffffff; border-top: 1px solid var(--border-light);">
+      <button type="button" class="chat-suggestion-chip" data-prompt="What is my workout today?">📅 What is today's workout?</button>
+      <button type="button" class="chat-suggestion-chip" data-prompt="Can I replace an exercise in today's workout?">🔄 Suggest an exercise replacement</button>
+      <button type="button" class="chat-suggestion-chip" data-prompt="What should I eat after today's workout?">🥗 Post-workout nutrition</button>
+      <button type="button" class="chat-suggestion-chip" data-prompt="Why am I doing 3 sets on my exercises?">❓ Why 3 sets?</button>
+      <button type="button" class="chat-suggestion-chip" data-prompt="I want more cardio in my weekly plan.">🏃 Add more cardio to my plan</button>
+    </div>
+
+    <!-- Chat Input Form -->
+    <div class="chat-popup-footer" style="padding: 0.85rem 1.25rem; background: #ffffff; border-top: 1px solid var(--border-color);">
+      <div class="chat-input-row" style="display: flex; gap: 0.65rem; align-items: center;">
+        <input type="text" id="pageChatInputField" class="chat-input-field" placeholder="Ask anything about your workouts, nutrition, or plan changes..." autocomplete="off">
+        <button type="button" class="chat-send-btn" id="pageChatSendBtn" aria-label="Send Message" title="Send (Enter)">
+          ↑
+        </button>
+      </div>
+      <div class="chat-footer-hint" style="margin-top: 0.4rem; display: flex; justify-content: space-between; font-size: 0.725rem; color: var(--text-subtle);">
+        <span>⚡ Calibrated to your biometrics & active routine</span>
+        <span>Press ↵ to send</span>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="/static/js/page_chat.js"></script>
+{% endblock %}

@@ -1,0 +1,402 @@
+/* FitBuddy Workout Plan, Daily Focus, Nutrition & History Styles */
+
+/* 7-Day Tab Pill Navigator */
+.days-tab-nav {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+  margin-bottom: 1.75rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.day-tab-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.6rem 1.15rem;
+  border-radius: var(--radius-full);
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all var(--transition-fast);
+  text-decoration: none;
+}
+
+.day-tab-btn:hover {
+  border-color: var(--border-dark);
+  color: var(--text-main);
+  background-color: var(--bg-subtle);
+}
+
+.day-tab-btn.active {
+  background-color: var(--primary);
+  border-color: var(--primary);
+  color: #ffffff;
+  box-shadow: 0 2px 6px rgba(13, 148, 136, 0.3);
+}
+
+.day-tab-btn.completed::after {
+  content: '✓';
+  font-size: 0.8rem;
+  color: var(--success);
+}
+.day-tab-btn.active.completed::after {
+  color: #ffffff;
+}
+
+/* Day Plan Section Header */
+.day-hero-card {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-xl);
+  padding: 1.75rem 2rem;
+  margin-bottom: 1.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+}
+
+.day-hero-title {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--text-main);
+}
+
+.day-hero-meta {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 0.35rem;
+  flex-wrap: wrap;
+}
+
+/* Warmup & Cooldown Blocks */
+.routine-prep-card {
+  background-color: #f8fafc;
+  border: 1px dashed var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.routine-prep-title {
+  font-size: 0.925rem;
+  font-weight: 700;
+  color: var(--text-main);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.prep-item-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  list-style: none;
+}
+
+.prep-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.875rem;
+  color: var(--text-muted);
+}
+
+/* Main Exercise Cards */
+.exercise-cards-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  margin-bottom: 2rem;
+}
+
+.exercise-card {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 1.35rem 1.5rem;
+  transition: all var(--transition-fast);
+}
+
+.exercise-card:hover {
+  border-color: #cbd5e1;
+  box-shadow: var(--shadow-sm);
+}
+
+.exercise-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 0.85rem;
+}
+
+.exercise-name {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.exercise-metrics-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-bottom: 0.75rem;
+}
+
+.metric-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.3rem 0.65rem;
+  background-color: var(--bg-subtle);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  font-size: 0.825rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.exercise-form-note {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  background-color: #f1f5f9;
+  border-left: 3px solid var(--primary);
+  padding: 0.5rem 0.75rem;
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  margin-top: 0.5rem;
+}
+
+/* Recovery Tip Card */
+.recovery-banner-card {
+  background: linear-gradient(135deg, #f0fdfa 0%, #ccfbf1 100%);
+  border: 1px solid #99f6e4;
+  border-radius: var(--radius-lg);
+  padding: 1.25rem 1.5rem;
+  color: #115e59;
+}
+
+/* Interactive Workout Tracker (Stopwatch & Sets Checklist) */
+.timer-widget {
+  background: #0f172a;
+  color: #ffffff;
+  border-radius: var(--radius-xl);
+  padding: 1.5rem;
+  text-align: center;
+  margin-bottom: 1.75rem;
+}
+
+.timer-display {
+  font-family: var(--font-mono);
+  font-size: 2.75rem;
+  font-weight: 700;
+  color: #10b981;
+  letter-spacing: 0.05em;
+  margin: 0.5rem 0;
+}
+
+.timer-controls {
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+.checklist-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+  padding: 1rem;
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  margin-bottom: 0.75rem;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.checklist-item:hover {
+  background-color: var(--bg-subtle);
+}
+
+.checklist-item.checked {
+  background-color: #f0fdf4;
+  border-color: #86efac;
+}
+
+.checklist-item.checked .checklist-title {
+  text-decoration: line-through;
+  color: var(--text-subtle);
+}
+
+.custom-checkbox {
+  width: 1.35rem;
+  height: 1.35rem;
+  border-radius: 4px;
+  border: 2px solid var(--border-dark);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 0.15rem;
+  transition: all var(--transition-fast);
+}
+
+.checklist-item.checked .custom-checkbox {
+  background-color: var(--success);
+  border-color: var(--success);
+  color: #ffffff;
+}
+
+/* Nutrition Page Specific Styles */
+.macro-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+
+@media (max-width: 800px) {
+  .macro-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+.macro-card {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem;
+  text-align: center;
+}
+
+.macro-label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.macro-val {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--text-main);
+  margin: 0.35rem 0;
+}
+
+.macro-sub {
+  font-size: 0.775rem;
+  color: var(--text-subtle);
+}
+
+/* Refinement Studio Chips */
+.quick-tag-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0.85rem 0 1.25rem;
+}
+
+.quick-tag-pill {
+  padding: 0.45rem 0.95rem;
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-full);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.quick-tag-pill:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.quick-tag-pill.selected {
+  background-color: var(--primary);
+  border-color: var(--primary);
+  color: #ffffff;
+}
+
+/* History Timeline */
+.timeline {
+  position: relative;
+  padding-left: 2rem;
+  margin: 2rem 0;
+}
+
+.timeline::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0.6rem;
+  width: 2px;
+  background-color: var(--border-color);
+}
+
+.timeline-item {
+  position: relative;
+  margin-bottom: 2rem;
+}
+
+.timeline-node {
+  position: absolute;
+  left: -2rem;
+  top: 0.25rem;
+  width: 1.35rem;
+  height: 1.35rem;
+  border-radius: 50%;
+  background-color: var(--bg-surface);
+  border: 3px solid var(--primary);
+}
+
+.timeline-item.active .timeline-node {
+  background-color: var(--primary);
+  box-shadow: 0 0 0 4px var(--primary-glow);
+}
+
+/* Admin Dashboard Tables */
+.admin-table-wrapper {
+  overflow-x: auto;
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.875rem;
+}
+
+.admin-table th {
+  background-color: var(--bg-subtle);
+  padding: 0.85rem 1rem;
+  font-weight: 700;
+  color: var(--text-main);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.admin-table td {
+  padding: 0.85rem 1rem;
+  border-bottom: 1px solid var(--border-light);
+  color: var(--text-muted);
+}
+
+.admin-table tr:hover td {
+  background-color: #fafbfc;
+}

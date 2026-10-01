@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block title %}Refine Routine — FitBuddy AI{% endblock %}
+
+{% block content %}
+<div class="container container-narrow" id="refine-container"
+     data-user-id="{{ user.id }}"
+     data-plan-id="{{ plan.id }}">
+
+  <div class="page-header" style="text-align: center; max-width: 640px; margin: 0 auto 2rem;">
+    <span class="badge badge-primary" style="margin-bottom: 0.5rem;">Update Your Routine</span>
+    <h1>Adjust Your Workout Plan</h1>
+    <p class="page-subtitle">
+      Tell FitBuddy what you'd like to change. We'll generate an updated version of your plan and keep your previous version safe in your history.
+    </p>
+  </div>
+
+  <div class="card" style="box-shadow: var(--shadow-md); margin-bottom: 2rem;">
+    
+    <!-- Current Plan Summary Box -->
+    <div style="background-color: var(--bg-subtle); border-radius: var(--radius-md); padding: 1.25rem; margin-bottom: 1.75rem;">
+      <div style="font-size: 0.75rem; text-transform: uppercase; font-weight: 700; color: var(--text-muted); letter-spacing: 0.05em; margin-bottom: 0.25rem;">
+        Current Workout Routine (Version {{ plan.version }})
+      </div>
+      <h3 style="font-size: 1.2rem; color: var(--text-main); margin-bottom: 0.25rem;">{{ plan.plan_title }}</h3>
+      <div style="display: flex; gap: 0.75rem; font-size: 0.85rem; color: var(--text-muted); flex-wrap: wrap;">
+        <span>🎯 Goal: <strong>{{ plan.target_goal }}</strong></span>
+        <span>•</span>
+        <span>⚡ Intensity: <strong>{{ plan.intensity }}</strong></span>
+        <span>•</span>
+        <span>📅 7 Days</span>
+      </div>
+    </div>
+
+    <!-- Quick Modification Suggestions Chips -->
+    <div class="form-group">
+      <label class="form-label">
+        Quick Adjustments
+        <span class="form-label-hint">(Click to pick what you want to change)</span>
+      </label>
+      
+      <div class="quick-tag-pills">
+        <button type="button" class="quick-tag-pill" data-tag="More cardio / HIIT">🏃 More cardio & light conditioning</button>
+        <button type="button" class="quick-tag-pill" data-tag="Add 2 rest & recovery days">🧘 Add 2 rest days</button>
+        <button type="button" class="quick-tag-pill" data-tag="Shorter 30-minute sessions">⏱️ Shorter 30-min workouts</button>
+        <button type="button" class="quick-tag-pill" data-tag="Reduce workout intensity">🟢 Make it easier & joint-friendly</button>
+        <button type="button" class="quick-tag-pill" data-tag="More heavy strength & compound lifts">🏋️ More strength exercises</button>
+        <button type="button" class="quick-tag-pill" data-tag="Focus on Core and Abs">🔥 Focus on Core & Abs</button>
+        <button type="button" class="quick-tag-pill" data-tag="Add outdoor conditioning">🌲 Add outdoor walking / jogging</button>
+      </div>
+    </div>
+
+    <!-- Custom Feedback Textarea -->
+    <div class="form-group" style="margin-top: 1.5rem;">
+      <label class="form-label" for="refine-feedback-textarea">
+        Your Instructions
+        <span class="form-label-hint">(Optional details)</span>
+      </label>
+      <textarea id="refine-feedback-textarea" class="form-textarea" rows="4" 
+                placeholder="e.g. Add a 10-minute walk at the end of workouts, and give me a full rest day on Wednesdays."></textarea>
+    </div>
+
+    <!-- Submit Action -->
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1.75rem; padding-top: 1.25rem; border-top: 1px solid var(--border-light);">
+      <a href="/workout?user_id={{ user.id }}" class="btn btn-secondary">
+        Cancel
+      </a>
+      
+      <button type="button" class="btn btn-primary btn-lg" id="submit-refine-btn">
+        ⚡ Regenerate Plan with AI
+      </button>
+    </div>
+
+  </div>
+
+  <!-- Information Note -->
+  <div style="text-align: center; font-size: 0.825rem; color: var(--text-subtle);">
+    FitBuddy automatically increments the plan version (e.g. Version {{ plan.version + 1 }}) and saves it to your history timeline so you can switch back at any time.
+  </div>
+
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="/static/js/refine.js"></script>
+{% endblock %}

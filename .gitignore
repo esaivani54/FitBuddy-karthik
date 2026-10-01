@@ -1,0 +1,40 @@
+# Virtual Environments
+venv/
+env/
+ENV/
+.venv/
+
+# Environment and Secrets
+.env
+.env.local
+*.env
+
+# SQLite Databases & Local Storage
+fitbuddy.db
+*.db
+*.sqlite
+*.sqlite3
+*.db-journal
+*.db-wal
+*.db-shm
+
+# Python cache & artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+*.pyo
+*.pyd
+
+# Pytest & Coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# IDE & OS Artifacts
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo

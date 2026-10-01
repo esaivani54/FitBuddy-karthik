@@ -1,0 +1,200 @@
+/* FitBuddy Responsive System & Device Breakpoints */
+
+/* ==========================================================================
+   Large Displays & 4K (1920px+)
+   ========================================================================== */
+@media (min-width: 1920px) {
+  .container {
+    width: min(92vw, 1680px);
+  }
+
+  .onboarding-workspace {
+    width: min(92vw, 1560px);
+    grid-template-columns: 0.8fr 1.4fr;
+    gap: 2.5rem;
+  }
+
+  .onboarding-form-card {
+    padding: 3rem;
+  }
+}
+
+/* ==========================================================================
+   Tablet Devices (768px - 1023px)
+   ========================================================================== */
+@media (max-width: 1023px) {
+  .onboarding-workspace {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .onboarding-left-panel {
+    padding: 1.75rem;
+  }
+
+  .onboard-vertical-stepper {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.75rem;
+  }
+
+  .onboard-step-item {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 0.5rem;
+  }
+
+  .onboard-step-text-desc {
+    display: none;
+  }
+
+  .onboarding-form-card {
+    padding: 2rem 1.75rem;
+  }
+
+  .goal-cards-grid, .intensity-cards-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* ==========================================================================
+   Mobile Devices (< 768px)
+   ========================================================================== */
+@media (max-width: 767px) {
+  /* Navigation */
+  .nav-menu {
+    display: none;
+  }
+
+  .nav-menu.mobile-open {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background-color: #ffffff;
+    border-bottom: 1px solid var(--border-color);
+    padding: 1rem 1.25rem;
+    box-shadow: var(--shadow-lg);
+    z-index: 999;
+  }
+
+  .mobile-menu-toggle {
+    display: flex !important;
+  }
+
+  /* Two-Zone Onboarding Mobile Collapse */
+  .onboarding-workspace {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+    width: 100%;
+    padding: 0 0.5rem;
+  }
+
+  .onboarding-left-panel {
+    padding: 1.25rem;
+    border-radius: var(--radius-xl);
+  }
+
+  .onboard-main-heading {
+    font-size: 1.45rem;
+  }
+
+  .onboard-supporting-text {
+    font-size: 0.85rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .onboard-vertical-stepper {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 0.35rem;
+    margin-bottom: 1rem;
+  }
+
+  .onboard-step-item {
+    padding: 0.35rem;
+    gap: 0.25rem;
+  }
+
+  .onboard-step-node {
+    width: 1.85rem;
+    height: 1.85rem;
+    font-size: 0.75rem;
+  }
+
+  .onboard-step-text-title {
+    font-size: 0.75rem;
+  }
+
+  .step-context-box {
+    display: none;
+  }
+
+  /* Form Right Panel */
+  .onboarding-form-card {
+    padding: 1.5rem 1.25rem;
+    border-radius: var(--radius-xl);
+  }
+
+  .form-header-title {
+    font-size: 1.35rem;
+  }
+
+  .form-header-subtitle {
+    font-size: 0.85rem;
+  }
+
+  /* Switch Form to 1 Column */
+  .grid-2 {
+    grid-template-columns: 1fr;
+  }
+
+  .goal-cards-grid, .intensity-cards-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .confirmation-summary-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .form-action-footer {
+    flex-direction: column-reverse;
+    align-items: stretch;
+  }
+
+  .form-action-buttons {
+    width: 100%;
+    justify-content: space-between;
+    margin-left: 0;
+  }
+
+  .form-action-hint {
+    text-align: center;
+    justify-content: center;
+  }
+
+  /* Compact Footer */
+  .footer-content {
+    flex-direction: column;
+    text-align: center;
+    gap: 0.75rem;
+  }
+}
+
+/* ==========================================================================
+   Small Mobile (< 480px)
+   ========================================================================== */
+@media (max-width: 480px) {
+  .btn {
+    width: 100%;
+  }
+
+  .form-action-buttons {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+}

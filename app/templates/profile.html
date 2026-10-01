@@ -1,0 +1,162 @@
+{% extends "base.html" %}
+
+{% block title %}User Profile — FitBuddy{% endblock %}
+
+{% block content %}
+<div class="container" style="padding-top: 1.5rem; padding-bottom: 3.5rem; max-width: 780px;">
+  
+  <div style="margin-bottom: 1.5rem;">
+    <h1 style="font-size: 1.75rem; font-weight: 800; color: var(--text-main); margin-bottom: 0.25rem; letter-spacing: -0.02em;">
+      Profile & Preferences
+    </h1>
+    <p style="font-size: 0.95rem; color: var(--text-muted); margin: 0;">
+      Update your information to keep your plan personalized.
+    </p>
+  </div>
+
+  <div class="card" style="padding: 1.75rem; border-radius: 16px; margin-bottom: 2rem; background: #ffffff;">
+    <form id="profile-form">
+      
+      <!-- ABOUT YOU -->
+      <div style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin-bottom: 1rem; letter-spacing: 0.05em;">
+        ABOUT YOU
+      </div>
+
+      <div class="grid grid-2" style="gap: 1rem; margin-bottom: 1rem;">
+        <div class="form-group">
+          <label class="form-label" for="prof-name">Full Name</label>
+          <input type="text" id="prof-name" class="form-input" value="{{ user.name }}" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="prof-age">Age</label>
+          <input type="number" id="prof-age" class="form-input" value="{{ user.age }}" min="12" max="100" required>
+        </div>
+      </div>
+
+      <div class="grid grid-2" style="gap: 1rem; margin-bottom: 1.75rem;">
+        <div class="form-group">
+          <label class="form-label" for="prof-weight">Weight (kg)</label>
+          <input type="number" id="prof-weight" class="form-input" value="{{ user.weight }}" step="0.5" min="30" max="300" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="prof-height">Height (cm)</label>
+          <input type="number" id="prof-height" class="form-input" value="{{ user.height or 175 }}" min="80" max="250">
+        </div>
+      </div>
+
+      <!-- FITNESS PREFERENCES -->
+      <div style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin-bottom: 1rem; letter-spacing: 0.05em; padding-top: 1rem; border-top: 1px solid var(--border-light);">
+        FITNESS PREFERENCES
+      </div>
+
+      <div class="grid grid-2" style="gap: 1rem; margin-bottom: 1rem;">
+        <div class="form-group">
+          <label class="form-label" for="prof-goal">Fitness Goal</label>
+          <select id="prof-goal" class="form-select">
+            <option value="Weight Loss" {% if user.goal == 'Weight Loss' %}selected{% endif %}>Weight Loss</option>
+            <option value="Muscle Gain" {% if user.goal == 'Muscle Gain' %}selected{% endif %}>Muscle Gain</option>
+            <option value="General Wellness" {% if user.goal == 'General Wellness' %}selected{% endif %}>General Wellness</option>
+            <option value="Endurance & Stamina" {% if user.goal == 'Endurance & Stamina' %}selected{% endif %}>Endurance & Stamina</option>
+            <option value="Strength & Power" {% if user.goal == 'Strength & Power' %}selected{% endif %}>Strength & Power</option>
+            <option value="Flexibility & Mobility" {% if user.goal == 'Flexibility & Mobility' %}selected{% endif %}>Flexibility & Mobility</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="prof-intensity">Workout Intensity</label>
+          <select id="prof-intensity" class="form-select">
+            <option value="Low" {% if user.intensity == 'Low' %}selected{% endif %}>Low (3 days/week)</option>
+            <option value="Medium" {% if user.intensity == 'Medium' %}selected{% endif %}>Medium (4 days/week)</option>
+            <option value="High" {% if user.intensity == 'High' %}selected{% endif %}>High (5 days/week)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="grid grid-2" style="gap: 1rem; margin-bottom: 1.5rem;">
+        <div class="form-group">
+          <label class="form-label" for="prof-equipment">Equipment</label>
+          <select id="prof-equipment" class="form-select">
+            <option value="Full Gym" {% if user.equipment == 'Full Gym' %}selected{% endif %}>Full Gym (Barbells, Machines)</option>
+            <option value="Dumbbells Only" {% if user.equipment == 'Dumbbells Only' %}selected{% endif %}>Dumbbells Only</option>
+            <option value="Bodyweight / Home" {% if user.equipment == 'Bodyweight / Home' %}selected{% endif %}>Bodyweight / Home</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="prof-gender">Gender</label>
+          <select id="prof-gender" class="form-select">
+            <option value="Male" {% if user.gender == 'Male' %}selected{% endif %}>Male</option>
+            <option value="Female" {% if user.gender == 'Female' %}selected{% endif %}>Female</option>
+            <option value="Prefer not to say" {% if user.gender == 'Prefer not to say' %}selected{% endif %}>Prefer not to say</option>
+          </select>
+        </div>
+      </div>
+
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1.75rem; padding-top: 1.25rem; border-top: 1px solid var(--border-light); flex-wrap: wrap; gap: 1rem;">
+        <button type="button" class="btn btn-secondary" id="rebuild-plan-btn">
+          Regenerate 7-Day Plan
+        </button>
+
+        <button type="submit" class="btn btn-primary" id="save-profile-btn">
+          Save Changes
+        </button>
+      </div>
+    </form>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const form = document.getElementById('profile-form');
+  const rebuildBtn = document.getElementById('rebuild-plan-btn');
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const saveBtn = document.getElementById('save-profile-btn');
+    saveBtn.disabled = true;
+    saveBtn.innerHTML = '<span class="spinner"></span> Saving...';
+
+    const payload = {
+      name: document.getElementById('prof-name').value.trim(),
+      age: parseInt(document.getElementById('prof-age').value),
+      weight: parseFloat(document.getElementById('prof-weight').value),
+      height: parseFloat(document.getElementById('prof-height').value) || 175,
+      goal: document.getElementById('prof-goal').value,
+      intensity: document.getElementById('prof-intensity').value,
+      equipment: document.getElementById('prof-equipment').value,
+      gender: document.getElementById('prof-gender').value
+    };
+
+    try {
+      await FitBuddy.api('/api/users/{{ user.id }}', {
+        method: 'PUT',
+        body: JSON.stringify(payload)
+      });
+      FitBuddy.toast('Profile updated successfully!', 'success');
+      setTimeout(() => window.location.reload(), 600);
+    } catch (err) {
+      saveBtn.disabled = false;
+      saveBtn.textContent = 'Save Profile Changes';
+    }
+  });
+
+  rebuildBtn.addEventListener('click', async () => {
+    const confirmed = await FitBuddy.confirm({
+      title: 'Regenerate 7-Day Plan?',
+      message: 'This will build a brand new 7-day routine based on your latest profile and equipment settings.',
+      confirmText: '⚡ Regenerate Plan',
+      confirmVariant: 'primary',
+      icon: '🔄'
+    });
+    if (confirmed) {
+      window.location.href = `/generating?user_id={{ user.id }}`;
+    }
+  });
+});
+</script>
+{% endblock %}

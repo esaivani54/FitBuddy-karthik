@@ -1,0 +1,160 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Management — FitBuddy{% endblock %}
+
+{% block content %}
+<div class="container">
+  
+  <div class="page-header">
+    <div class="page-title-row">
+      <div>
+        <span class="badge badge-primary" style="margin-bottom: 0.4rem;">System Analytics</span>
+        <h1>Platform Administration</h1>
+        <p class="page-subtitle">Monitor user activity, AI generation workflows, and platform performance.</p>
+      </div>
+
+      <div style="display: flex; gap: 0.75rem;">
+        <button type="button" class="btn btn-secondary btn-sm" id="admin-seed-btn">
+          🌱 Seed Demo Data
+        </button>
+        <button type="button" class="btn btn-danger btn-sm" id="admin-reset-btn">
+          🗑️ Reset Database
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Key Metrics Row -->
+  <div class="grid grid-4" style="margin-bottom: 2rem;">
+    <div class="card" style="border-left: 4px solid var(--primary);">
+      <div style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Total Users</div>
+      <div style="font-size: 2rem; font-weight: 800; color: var(--text-main); margin-top: 0.25rem;">{{ stats.total_users }}</div>
+      <div style="font-size: 0.75rem; color: var(--text-subtle); margin-top: 0.25rem;">Registered Athletes</div>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--secondary);">
+      <div style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Plans Generated</div>
+      <div style="font-size: 2rem; font-weight: 800; color: var(--text-main); margin-top: 0.25rem;">{{ stats.total_plans }}</div>
+      <div style="font-size: 0.75rem; color: var(--text-subtle); margin-top: 0.25rem;">7-Day AI Routines</div>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--warning);">
+      <div style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">AI Regenerations</div>
+      <div style="font-size: 2rem; font-weight: 800; color: var(--text-main); margin-top: 0.25rem;">{{ stats.total_regenerations }}</div>
+      <div style="font-size: 0.75rem; color: var(--text-subtle); margin-top: 0.25rem;">Feedback Adaptations</div>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--success);">
+      <div style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Sessions Logged</div>
+      <div style="font-size: 2rem; font-weight: 800; color: var(--text-main); margin-top: 0.25rem;">{{ stats.completed_workouts }}</div>
+      <div style="font-size: 0.75rem; color: var(--text-subtle); margin-top: 0.25rem;">Completed Day Workouts</div>
+    </div>
+  </div>
+
+  <!-- Distributions & Activity Stream -->
+  <div class="grid grid-2" style="margin-bottom: 2.5rem;">
+    
+    <!-- Goal Distribution Card -->
+    <div class="card">
+      <h4 style="margin-bottom: 1rem;">Goal Distribution</h4>
+      <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+        {% for goal, count in stats.goal_distribution.items() %}
+          {% set pct = ((count / (stats.total_users or 1)) * 100)|round|int %}
+          <div>
+            <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 0.25rem;">
+              <strong>{{ goal }}</strong>
+              <span style="color: var(--text-muted);">{{ count }} user{{ 's' if count != 1 else '' }}</span>
+            </div>
+            <div style="width: 100%; height: 6px; background-color: var(--bg-subtle); border-radius: var(--radius-full); overflow: hidden;">
+              <div class="goal-progress-bar" data-progress="{{ pct }}"></div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Recent Generation Activity -->
+    <div class="card">
+      <h4 style="margin-bottom: 1rem;">Recent AI Plan Generations</h4>
+      <div style="display: flex; flex-direction: column; gap: 0.75rem; max-height: 220px; overflow-y: auto;">
+        {% for act in stats.recent_activity %}
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0; border-bottom: 1px dashed var(--border-color); font-size: 0.85rem;">
+            <div>
+              <strong>{{ act.user_name }}</strong> — <span style="color: var(--text-muted);">v{{ act.version }} ({{ act.goal }})</span>
+              {% if act.feedback %}
+                <div style="font-size: 0.75rem; color: var(--primary);">💬 "{{ act.feedback[:50] }}..."</div>
+              {% endif %}
+            </div>
+            <span style="font-size: 0.75rem; color: var(--text-subtle);">{{ act.created_at }}</span>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Registered Users Table -->
+  <div class="card" style="padding: 0; overflow: hidden; margin-bottom: 2rem;">
+    <div style="padding: 1.25rem 1.5rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; border-bottom: 1px solid var(--border-color);">
+      <div>
+        <h3 style="font-size: 1.15rem; margin: 0;">Registered Athletes</h3>
+        <p style="font-size: 0.85rem; margin: 0;">Overview of active profiles and routine versions.</p>
+      </div>
+
+      <div style="width: 260px;">
+        <input type="text" id="admin-user-search" class="form-input" style="padding: 0.45rem 0.75rem; font-size: 0.85rem;" placeholder="Search by name or goal...">
+      </div>
+    </div>
+
+    <div class="admin-table-wrapper" style="border: none; border-radius: 0;">
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Age / Weight</th>
+            <th>Goal</th>
+            <th>Intensity</th>
+            <th>Plans</th>
+            <th>Last Active</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for u in users %}
+            <tr class="admin-user-row">
+              <td>#{{ u.id }}</td>
+              <td style="font-weight: 700; color: var(--text-main);">
+                {{ u.name }}
+                <div style="font-size: 0.75rem; font-weight: normal; color: var(--text-subtle);">{{ u.gender }} • {{ u.height|round|int }}cm</div>
+              </td>
+              <td>{{ u.age }} yrs / {{ u.weight }} kg</td>
+              <td><span class="badge badge-secondary">{{ u.goal }}</span></td>
+              <td><span class="badge badge-muted">{{ u.intensity }}</span></td>
+              <td>
+                <span class="badge badge-primary">{{ u.plan_count }} version{{ 's' if u.plan_count != 1 else '' }}</span>
+              </td>
+              <td style="font-size: 0.8rem;">{{ u.last_active }}</td>
+              <td>
+                <div style="display: flex; gap: 0.4rem;">
+                  <a href="/dashboard?user_id={{ u.id }}" class="btn btn-secondary btn-sm" title="View Dashboard">
+                    Dashboard
+                  </a>
+                  <a href="/history?user_id={{ u.id }}" class="btn btn-ghost btn-sm" title="View History">
+                    History
+                  </a>
+                </div>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="/static/js/admin.js"></script>
+{% endblock %}
