@@ -99,7 +99,9 @@ const FitBuddy = {
   // Make API Request Helper
   api: async function (url, options = {}) {
     try {
-      const response = await fetch(url, {
+      const baseUrl = window.FITBUDDY_API_BASE || '';
+      const requestUrl = (url.startsWith('http://') || url.startsWith('https://')) ? url : (baseUrl + url);
+      const response = await fetch(requestUrl, {
         headers: {
           'Content-Type': 'application/json',
           ...(options.headers || {})
